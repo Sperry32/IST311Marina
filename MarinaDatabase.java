@@ -13,8 +13,8 @@ public class MarinaDatabase {
     PreparedStatement addNewLease = null;
     PreparedStatement addNewPowerboat = null;
     PreparedStatement addNewSailboat = null;
-    PreparedStatement addNewServiceRecord = null;
-    DateFormat df = new SimpleDateFormat("MM/dd/yyy");
+    PreparedStatement addNewMaintenance = null;
+    DateFormat df = new SimpleDateFormat("MM/dd/yyyY");
 
     public MarinaDatabase(){
         try{
@@ -25,7 +25,7 @@ public class MarinaDatabase {
             JOptionPane.showMessageDialog(null, e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
     public ResultSet searchCustByName(String fName, String lName) {
         try
         {
@@ -46,7 +46,70 @@ public class MarinaDatabase {
             return rSet;
         }
     }
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+    public ResultSet searchCustByName(String fName, String lName) {
+        try
+        {
+            searchCustByName = connection.prepareStatement(
+                    "SELECT firstName, lastName, boatingLicense FROM Customer WHERE firstName = ? AND lastName = ?");
 
+            searchCustByName.setString(1, fName);
+            searchCustByName.setString(2, lName);
+
+            rSet = searchCustByName.executeQuery();
+
+            return rSet;
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e.getMessage());
+            return rSet;
+        }
+    }
+///////////////////////////////////////////////////////////////////////////////////////////////////////    
+    public ResultSet searchCustByName(String fName, String lName) {
+        try
+        {
+            searchCustByName = connection.prepareStatement(
+                    "SELECT firstName, lastName, boatingLicense FROM Customer WHERE firstName = ? AND lastName = ?");
+
+            searchCustByName.setString(1, fName);
+            searchCustByName.setString(2, lName);
+
+            rSet = searchCustByName.executeQuery();
+
+            return rSet;
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e.getMessage());
+            return rSet;
+        }
+    }
+///////////////////////////////////////////////////////////////////////////////////////////////////////    
+    public ResultSet searchCustByName(String fName, String lName) {
+        try
+        {
+            searchCustByName = connection.prepareStatement(
+                    "SELECT firstName, lastName, boatingLicense FROM Customer WHERE firstName = ? AND lastName = ?");
+
+            searchCustByName.setString(1, fName);
+            searchCustByName.setString(2, lName);
+
+            rSet = searchCustByName.executeQuery();
+
+            return rSet;
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e.getMessage());
+            return rSet;
+        }
+    }
+///////////////////////////////////////// ADDS////////////////////////////////////////////////////////////////////////
     public void addNewCust(int license, String fName, String lName){
         try{
             addNewCust = connection.prepareStatement("INSERT INTO CUSTOMER(boatingLicense, firstName, lastName) VALUES(?, ?, ?)");
@@ -56,87 +119,88 @@ public class MarinaDatabase {
             addNewCust.setString(3, lName);
 
             System.out.println("Customer added!");
-            addNewCust.executeUpdate();
+            int ans = addNewCust.executeUpdate();
         }
         catch(Exception e){
-            e.printStackTrace();
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
-
-    //TODO: double check types w/ db
-    //TODO: ensure the Date gets inserted correctly
-    public void addNewLease(int slotNum, double rate, int duration, String expirationDate, int slipNumber){
+///////////////////////////////////////////////////////////////////////////////////////////////////////    
+    public void addNewPowerboat(int registrationNum, double size, String fuelType, int numEngines, String engineType){
         try{
-            addNewLease = connection.prepareStatement("INSERT INTO LEASE(slotNum, rate, duration, expirationDate, slipNumber) VALUES(?, ?, ?, ?, ?)");
-
-            addNewLease.setInt(1, slotNum);
-            addNewLease.setDouble(2, rate);
-            addNewLease.setInt(3, duration);
-            addNewLease.setDate(4, (Date)df.parse(expirationDate));
-            addNewLease.setInt(5, slipNumber);
-
-            System.out.println("Lease added!");
-            addNewCust.executeUpdate();
-        }
-        catch(Exception e){
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(null, e.getMessage());
-        }
-    }
-
-    //TODO potential problem with size?
-    public void addNewPowerboat(int registrationNum, int size, String fuelType, int engineNum, String engineType){
-        try{
-            addNewPowerboat = connection.prepareStatement("INSERT INTO POWERBOAT(registrationNum, size, fuelType, engineNum, engineType) VALUES(?, ?, ?, ?, ?)");
+            addNewPowerboat = connection.prepareStatement("INSERT INTO POWERBOAT(registrationNum, size, fuelType, numEngines, engineType) VALUES(?, ?, ?, ?, ?)");
 
             addNewPowerboat.setInt(1, registrationNum);
-            addNewPowerboat.setInt(2, size);
+            addNewPowerboat.setDouble(2, size);
             addNewPowerboat.setString(3, fuelType);
-            addNewPowerboat.setInt(4, engineNum);
+            addNewPowerboat.setInt(4, numEngines);
             addNewPowerboat.setString(5, engineType);
+           
 
-            System.out.println("Powerboat added!");
-            addNewCust.executeUpdate();
+            System.out.println("Power Boat added!");
+            int ans = addNewPowerboat.executeUpdate();
         }
         catch(Exception e){
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
-
-    //TODO potential problem with size?
-    public void addNewSailboat(int registrationNum, int size, String fuelType, int keelHeight, String hasEngine, int sailNum){
+///////////////////////////////////////////////////////////////////////////////////////////////////////    
+    public void addNewSailboat(int registrationNum, double size, String fuelType, double keelHeight, boolean hasEngine, int sailNum){
         try{
             addNewSailboat = connection.prepareStatement("INSERT INTO SAILBOAT(registrationNum, size, fuelType, keelHeight, hasEngine, sailNum) VALUES(?, ?, ?, ?, ?, ?)");
 
             addNewSailboat.setInt(1, registrationNum);
-            addNewSailboat.setInt(2, size);
+            addNewSailboat.setDouble(2, size);
             addNewSailboat.setString(3, fuelType);
-            addNewSailboat.setInt(4, keelHeight);
-            addNewSailboat.setString(5, hasEngine);
+            addNewSailboat.setDouble(4, keelHeight);
+            addNewSailboat.setBoolean(5, hasEngine);
             addNewSailboat.setInt(6, sailNum);
+           
 
-            System.out.println("Customer added!");
-            addNewCust.executeUpdate();
+            System.out.println("Sail Boat added!");
+            int ans = addNewSailboat.executeUpdate();
         }
         catch(Exception e){
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
-
-
-    public void addNewServiceRecord(int invoiceNum, String dateOfMaintenance, String workDone){
+///////////////////////////////////////////////////////////////////////////////////////////////////////    
+    public void addNewLease(int slipNumber, int slotNumber, int duration, double rate, String expirationDate){
         try{
-            addNewServiceRecord = connection.prepareStatement("INSERT INTO MAINTENANCE(invoiceNum, dateOfMaintenance, workDone) VALUES(?, ?, ?)");
+            addNewLease = connection.prepareStatement("INSERT INTO LEASE(slipNumber, slotNumber, duration, rate, expirationDate) VALUES(?, ?, ?, ?, ?)");
 
-            addNewServiceRecord.setInt(1, invoiceNum);
-            addNewServiceRecord.setDate(2, (Date)df.parse(dateOfMaintenance));
-            addNewServiceRecord.setString(3, workDone);
+            addNewLease.setInt(1, slipNumber);
+            addNewLease.setInt(2, slotNumber);
+            addNewLease.setInt(3, duration);
+            addNewLease.setDouble(4, rate);
+            addNewLease.setString(5, expirationDate);
+            
+            System.out.println("Lease Created!");
+            int ans = addNewLease.executeUpdate();
+            
+            //possible location for boatLeases and customerLeases code
+            
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+    }
+///////////////////////////////////////////////////////////////////////////////////////////////////////    
+    public void addNewMaintenance(int invoiceNum, String dateOfMaintenance, String workDone){
+        try{
+            addNewMaintenance = connection.prepareStatement("INSERT INTO MAINTENANCE(invoiceNum, dateOfMaintenance, workDone) VALUES(?, ?, ?)");
 
-            System.out.println("Service Record added!");
-            addNewCust.executeUpdate();
+            addNewMaintenance.setInt(1, invoiceNum);
+            addNewMaintenance.setString(2, dateOfMaintenance);
+            addNewMaintenance.setString(3, workDone);
+
+            System.out.println("Maintenance record created!");
+            int ans = addNewMaintenance.executeUpdate();
+            
+            //possible location for boatMaintenance code
         }
         catch(Exception e){
             e.printStackTrace();
@@ -144,3 +208,7 @@ public class MarinaDatabase {
         }
     }
 }
+///////////////Storage/////////////////////////
+// addNewServiceRecord.setDate(2, (Date)df.parse(dateOfMaintenance));
+//
+////////////////////////////////////////////////
