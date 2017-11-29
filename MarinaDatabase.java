@@ -14,7 +14,7 @@ public class MarinaDatabase {
     PreparedStatement addNewPowerboat = null;
     PreparedStatement addNewSailboat = null;
     PreparedStatement addNewMaintenance = null;
-    DateFormat df = new SimpleDateFormat("MM/dd/yyyY");
+    DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 
     public MarinaDatabase(){
         try{
@@ -47,16 +47,37 @@ public class MarinaDatabase {
         }
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
-    public ResultSet searchCustByName(String fName, String lName) {
+    public ResultSet searchPowerBoatByRegNum(int registrationNumber) {
         try
         {
-            searchCustByName = connection.prepareStatement(
-                    "SELECT firstName, lastName, boatingLicense FROM Customer WHERE firstName = ? AND lastName = ?");
+            searchPowerBoatByRegNum = connection.prepareStatement(
+                    "SELECT registrationNumber, size, fuelType, numEngines, engineType, FROM Powerboat WHERE registrationNumber = ?");
 
-            searchCustByName.setString(1, fName);
-            searchCustByName.setString(2, lName);
+            searchPowerBoatByRegNum.setInt(1, registrationNumber);
+            
 
-            rSet = searchCustByName.executeQuery();
+            rSet = searchPowerBoatByRegNum.executeQuery();
+
+            return rSet;
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e.getMessage());
+            return rSet;
+        }
+    }
+///////////////////////////////////////////////////////////////////////////////////////////////////////    
+     public ResultSet searchSailBoatByRegNum(int registrationNumber) {
+        try
+        {
+            searchSailBoatByRegNum = connection.prepareStatement(
+                    "SELECT registrationNumber, size, fuelType, keelHeight, hasEngine, sailNum FROM Sailboat WHERE registrationNumber = ?");
+
+            searchSailBoatByRegNum.setInt(1, registrationNumber);
+            
+
+            rSet = searchSailBoatByRegNum.executeQuery();
 
             return rSet;
         }
@@ -88,7 +109,7 @@ public class MarinaDatabase {
             return rSet;
         }
     }
-///////////////////////////////////////////////////////////////////////////////////////////////////////    
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////    
     public ResultSet searchCustByName(String fName, String lName) {
         try
         {
