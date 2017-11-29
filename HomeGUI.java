@@ -8,7 +8,7 @@ public class HomeGUI implements ActionListener{
     final String    HOME_MENU = "Home Menu",
                     SEARCH_MENU = "Search Menu",
                     CREATE_MENU = "Create Menu",
-                    FINANCIAL_MENU = "Financial Menu",				//newly added
+                    FINANCIAL_MENU = "Financial Menu",
                     CUSTOMER_SEARCH = "Customer Panel",
                     BOAT_SEARCH = "Boat Panel",
                     LEASE_SEARCH = "Lease Search",
@@ -16,7 +16,9 @@ public class HomeGUI implements ActionListener{
                     CREATE_CUSTOMER = "Create Customer",
                     CREATE_LEASE = "Create Lease",
                     CREATE_SERVICE_RECORD = "Create Service Record",
-                    CREATE_PAYMENT = "Create Payment";				//newly added
+                    CREATE_PAYMENT = "Create Payment",
+                    CREATE_SAILBOAT = "Create Sailboat",
+                    CREATE_POWERBOAT = "Create Powerboat";
 
 
     MarinaDatabase db = new MarinaDatabase();
@@ -45,7 +47,7 @@ public class HomeGUI implements ActionListener{
     public void addComponentToPane(Container pane){
         JPanel  homeMenu = homeMenu(),
                 searchMenu = searchMenu(),
-                financialMenu = FinancialMenu(),		//newly added
+                financialMenu = FinancialMenu(),
                 createCustomer = createCustomer(),
                 createMenu = createMenu(),
                 createServiceRecord = createServiceRecord(),
@@ -54,14 +56,16 @@ public class HomeGUI implements ActionListener{
                 boatSearch = boatSearch(),
                 leaseSearch = leaseSearch(),
                 serviceSearch = serviceSearch(), 
-                createPayment = createPayment(); 
+                createPayment = createPayment(),
+                createPowerboat = createPowerboat(),
+                createSailboat = createSailboat();
 
         cards = new JPanel(new CardLayout());
 
 
         cards.add(homeMenu, HOME_MENU);
         cards.add(searchMenu, SEARCH_MENU);
-        cards.add(financialMenu, FINANCIAL_MENU);	//newly added
+        cards.add(financialMenu, FINANCIAL_MENU);
         cards.add(createCustomer, CREATE_CUSTOMER);
         cards.add(createServiceRecord, CREATE_SERVICE_RECORD);
         cards.add(createLease, CREATE_LEASE);
@@ -71,6 +75,8 @@ public class HomeGUI implements ActionListener{
         cards.add(leaseSearch, LEASE_SEARCH);
         cards.add(serviceSearch, SERVICE_RECORD_SEARCH);
         cards.add(createPayment, CREATE_PAYMENT);
+        cards.add(createSailboat, CREATE_SAILBOAT);
+        cards.add(createPowerboat, CREATE_POWERBOAT);
 
         pane.add(cards);
 
@@ -175,7 +181,9 @@ public class HomeGUI implements ActionListener{
         JButton back = new JButton("Back"),
                 customer = new JButton("Create a Customer"),
                 lease = new JButton("Create a Lease"),
-                serviceRecord = new JButton("Create a Service Record");
+                serviceRecord = new JButton("Create a Service Record"),
+                sailBoat = new JButton("Create a Sail Boat"),
+                powerBoat = new JButton("Create a Power Boat");
 
         back.addActionListener(new ActionListener(){
             @Override
@@ -207,10 +215,30 @@ public class HomeGUI implements ActionListener{
             }
         });
 
+
+        sailBoat.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CardLayout cl = (CardLayout)(cards.getLayout());
+                cl.show(cards, CREATE_SAILBOAT);
+            }
+        });
+
+
+        powerBoat.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CardLayout cl = (CardLayout)(cards.getLayout());
+                cl.show(cards, CREATE_POWERBOAT);
+            }
+        });
+
         createMenu.add(back);
         createMenu.add(customer);
         createMenu.add(lease);
         createMenu.add(serviceRecord);
+        createMenu.add(powerBoat);
+        createMenu.add(sailBoat);
 
         return createMenu;
     }
@@ -241,7 +269,7 @@ public class HomeGUI implements ActionListener{
             }
         });
 
-        submit.addActionListener(new ActionListener(){					//newly added
+        submit.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
                 int license = Integer.parseInt(licTF.getText());
@@ -384,7 +412,7 @@ public class HomeGUI implements ActionListener{
     			numLbl = new JLabel("Card Number:"),
     			securityLbl = new JLabel("Security Code:"),
     			dateLbl = new JLabel("Expiration Date:"),
-    			totalLbl = new JLabel("Total Amount Due: $0.00");	//change this later to reflect actual cost
+    			totalLbl = new JLabel("Total Amount Due: $0.00");	//TODO: change this later to reflect actual cost
     			
     	JTextField  nameField = new JTextField(12),
     				numField = new JTextField(12),
@@ -392,7 +420,7 @@ public class HomeGUI implements ActionListener{
     				dateField = new JTextField(12);
     	
     	createPayment.setLayout(new GridLayout(6,2));
-    	
+
     	createPayment.add(new JLabel());
     	createPayment.add(backBtn);
     	
@@ -425,6 +453,113 @@ public class HomeGUI implements ActionListener{
     	return createPayment;
     }
 
+    public JPanel createPowerboat(){
+        JPanel createPowerboat = new JPanel();
+
+        JButton back = new JButton("Back"),
+                submit = new JButton("Submit");
+
+        JLabel	registrationNum = new JLabel("Registration Number:"),
+                length = new JLabel("Length(feet):"),
+                fuelType = new JLabel("Fuel Type:"),
+                engineNum = new JLabel("Number of Engines:"),
+                engineType = new JLabel("Type of Engine(s):");
+
+        JTextField  registrationNumTF = new JTextField(12),
+                    lengthTF = new JTextField(12),
+                    fuelTypeTF = new JTextField(12),
+                    engineNumTF = new JTextField(12),
+                    engineTypeTF = new JTextField(12);
+
+
+        createPowerboat.setLayout(new GridLayout(7,2));
+
+        createPowerboat.add(back);
+        createPowerboat.add(new JLabel());
+
+        createPowerboat.add(registrationNum);
+        createPowerboat.add(registrationNumTF);
+
+        createPowerboat.add(length);
+        createPowerboat.add(lengthTF);
+
+        createPowerboat.add(fuelType);
+        createPowerboat.add(fuelTypeTF);
+
+        createPowerboat.add(engineNum);
+        createPowerboat.add(engineNumTF);
+
+        createPowerboat.add(engineType);
+        createPowerboat.add(engineTypeTF);
+
+        createPowerboat.add(submit);
+
+        back.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CardLayout cl = (CardLayout)(cards.getLayout());
+                cl.show(cards, CREATE_MENU);
+            }
+        });
+
+        return createPowerboat;
+    }
+
+    public JPanel createSailboat(){
+        JPanel createSailboat = new JPanel();
+
+        JButton back = new JButton("Back"),
+                submit = new JButton("Submit");
+
+        JLabel	registrationNum = new JLabel("Registration Number:"),
+                length = new JLabel("Length(feet):"),
+                fuelType = new JLabel("Fuel Type"),
+                keelHeight = new JLabel("Keel Height:"),
+                hasEngine = new JLabel("Have an engine:"),
+                sailNum = new JLabel("Number of Sails:");
+
+        JTextField  registrationNumTF = new JTextField(12),
+                    lengthTF = new JTextField(12),
+                    fuelTypeTF = new JTextField(12),
+                    keelHeightTF = new JTextField(12),
+                    hasEngineTF = new JTextField(12),
+                    sailNumTF = new JTextField(12);
+
+
+        createSailboat.setLayout(new GridLayout(8,2));
+
+        createSailboat.add(back);
+        createSailboat.add(new JLabel());
+
+        createSailboat.add(registrationNum);
+        createSailboat.add(registrationNumTF);
+
+        createSailboat.add(length);
+        createSailboat.add(lengthTF);
+
+        createSailboat.add(fuelType);
+        createSailboat.add(fuelTypeTF);
+
+        createSailboat.add(keelHeight);
+        createSailboat.add(keelHeightTF);
+
+        createSailboat.add(hasEngine);
+        createSailboat.add(hasEngineTF);
+
+        createSailboat.add(sailNum);
+        createSailboat.add(sailNumTF);
+
+        createSailboat.add(submit);
+
+        back.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CardLayout cl = (CardLayout)(cards.getLayout());
+                cl.show(cards, CREATE_MENU);
+            }
+        });
+        return createSailboat;
+    }
     public JPanel serviceSearch(){
         JPanel serviceSearch = new JPanel();
 
@@ -545,7 +680,7 @@ public class HomeGUI implements ActionListener{
             }
         });
         
-        submit.addActionListener(new ActionListener(){					//newly added
+        submit.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 		        //for database connection
@@ -662,13 +797,17 @@ public class HomeGUI implements ActionListener{
         //-------_File --------------
         menuBar.add(file);
 
-        JMenuItem createCustomer,
-                createLease,
-                createServiceRecord;
+        JMenuItem   createCustomer,
+                    createLease,
+                    createServiceRecord,
+                    createPowerboat,
+                    createSailboat;
 
         createCustomer = new JMenuItem("Create New Customer");
         createLease = new JMenuItem("Create New Lease");
         createServiceRecord = new JMenuItem("Create Service Record");
+        createPowerboat = new JMenuItem("Create Powerboat");
+        createSailboat = new JMenuItem("Create Sailboat");
 
         createCustomer.addActionListener(new ActionListener() {
             @Override
@@ -691,10 +830,25 @@ public class HomeGUI implements ActionListener{
                 cl.show(cards, CREATE_SERVICE_RECORD);
             }
         });
-
+        createSailboat.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CardLayout cl = (CardLayout)(cards.getLayout());
+                cl.show(cards, CREATE_SAILBOAT);
+            }
+        });
+        createPowerboat.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CardLayout cl = (CardLayout)(cards.getLayout());
+                cl.show(cards, CREATE_POWERBOAT);
+            }
+        });
         file.add(createCustomer);
         file.add(createLease);
         file.add(createServiceRecord);
+        file.add(createSailboat);
+        file.add(createPowerboat);
 
         //------- Search ------------
         menuBar.add(search);
@@ -752,8 +906,8 @@ public class HomeGUI implements ActionListener{
         JMenuItem leaseBill,
                 serviceBill;
 
-        leaseBill = new JMenu("Lease Bill");
-        serviceBill = new JMenu("Service Bill");
+        leaseBill = new JMenuItem("Lease Bill");
+        serviceBill = new JMenuItem("Service Bill");
 
         createBill.add(leaseBill);
         createBill.add(serviceBill);
@@ -776,7 +930,7 @@ public class HomeGUI implements ActionListener{
     }
     
     //--------financial--------
-    public JPanel FinancialMenu(){							//newly added
+    public JPanel FinancialMenu(){
     	JPanel financialMenu = new JPanel();
     	
     	JButton paymentBtn = new JButton("Make A Payment"),
