@@ -192,7 +192,7 @@ public class MarinaDatabase {
         }
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
-    public void addNewLease(int slipNumber, int slotNumber, int duration, double rate, String expirationDate, int registrationNumber, int boatingLicense){
+    public void addNewLease(int slipNumber, int slotNumber, int duration, double rate, Date expirationDate, int boatingLicense){
         try{
             addNewLease = connection.prepareStatement("INSERT INTO LEASE(slipNumber, slotNumber, duration, rate, expirationDate) VALUES(?, ?, ?, ?, ?)");
 
@@ -200,18 +200,18 @@ public class MarinaDatabase {
             addNewLease.setInt(2, slotNumber);
             addNewLease.setInt(3, duration);
             addNewLease.setDouble(4, rate);
-            addNewLease.setString(5, expirationDate);
+            addNewLease.setDate(5, expirationDate);
 
             System.out.println("Lease Created!");
             int ans = addNewLease.executeUpdate();
 
 
-            /*
+
             addNewboatLeases = connection.prepareStatement("INSERT INTO BOATLEASES(slipNumber, registrationNumber) VALUES(?, ?)");
             addNewboatLeases.setInt(1, slipNumber);
-            addNewboatLeases.setInt(2, registrationNumber);
+            addNewboatLeases.setInt(2, boatingLicense);
 
-
+            /*
             //System.out.println("Lease Created!");
             int ans2 = addNewLease.executeUpdate();
             */

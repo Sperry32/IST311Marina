@@ -328,26 +328,30 @@ public class HomeGUI implements ActionListener{
     public JPanel createLease(){
         JPanel createLease = new JPanel();
 
-        final String    BOATSLOT = "Boat slot",
-                RATE = "Rate",
-                EXPIRATIONDATE = "Expiration Date",
-                DURATION = "Duration",
-                SLIPNUMBER = "Slip Number";
+        final String    CUSTREGNUM      = "Customer License Number",
+                        BOATSLOT        = "Boat slot",
+                        RATE            = "Rate",
+                        EXPIRATIONDATE  = "Expiration Date",
+                        DURATION        = "Duration",
+                        SLIPNUMBER      = "Slip Number";
+
 
         JButton back = new JButton("Back"),
                 submit = new JButton("Submit");
 
-        JLabel  slipNum = new JLabel(SLIPNUMBER, SwingConstants.RIGHT),
+        JLabel  boatingLicense = new JLabel(CUSTREGNUM, SwingConstants.RIGHT),
+                slipNum = new JLabel(SLIPNUMBER, SwingConstants.RIGHT),
                 boatSlot = new JLabel(BOATSLOT, SwingConstants.RIGHT),
                 expirationDate = new JLabel(EXPIRATIONDATE, SwingConstants.RIGHT),
                 duration = new JLabel(DURATION, SwingConstants.RIGHT),
                 rate = new JLabel(RATE, SwingConstants.RIGHT);
 
-        JTextField  slipNumTF = new JTextField(25),
-                boatSlotTF = new JTextField(25),
-                expirationDateTF = new JTextField(25),
-                durationTF = new JTextField(25),
-                rateTF = new JTextField(25);
+        JTextField  boatingLicenseTF = new JTextField(25),
+                    slipNumTF = new JTextField(25),
+                    boatSlotTF = new JTextField(25),
+                    expirationDateTF = new JTextField(25),
+                    durationTF = new JTextField(25),
+                    rateTF = new JTextField(25);
 
         back.addActionListener(new ActionListener(){
             @Override
@@ -357,10 +361,27 @@ public class HomeGUI implements ActionListener{
             }
         });
 
-        createLease.setLayout(new GridLayout(7, 2));
+        submit.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int boatingLicense = Integer.parseInt(boatingLicenseTF.getText());
+                int slipNum = Integer.parseInt(slipNumTF.getText());
+                int boatSlot = Integer.parseInt(boatSlotTF.getText());
+                Date expirationDate = Date.valueOf(expirationDateTF.getText());
+                int duration = Integer.parseInt(durationTF.getText());
+                double rate = Double.parseDouble(rateTF.getText());
+
+                db.addNewLease(slipNum, boatSlot, duration, rate, expirationDate, boatingLicense);
+            }
+        });
+
+        createLease.setLayout(new GridLayout(8, 2));
 
         createLease.add(back);
         createLease.add(new JLabel());
+
+        createLease.add(boatingLicense);
+        createLease.add(boatingLicenseTF);
 
         createLease.add(slipNum);
         createLease.add(slipNumTF);
@@ -385,19 +406,22 @@ public class HomeGUI implements ActionListener{
     public JPanel createServiceRecord(){
         JPanel createServiceRecord = new JPanel();
 
-        final String    INVOICENUMBER = "Invoice #",
-                DATEOFMAINT = "Date of Maintenance",
-                WORKDONE = "Work Done";
+        final String    INVOICENUMBER   = "Invoice #",
+                        DATEOFMAINT     = "Date of Maintenance",
+                        WORKDONE        = "Work Done",
+                        LEASENUM        = "Lease Number: ";
 
         JButton back = new JButton("Back"),
                 submit = new JButton("Submit");
 
-        JLabel  invoiceNum = new JLabel(INVOICENUMBER, SwingConstants.RIGHT),
+        JLabel  leaseNum = new JLabel(LEASENUM, SwingConstants.RIGHT),
+                invoiceNum = new JLabel(INVOICENUMBER, SwingConstants.RIGHT),
                 date = new JLabel(DATEOFMAINT, SwingConstants.RIGHT),
                 workDone = new JLabel(WORKDONE, SwingConstants.RIGHT);
 
-        JTextField  invoiceNumTF = new JTextField(25),
-                dateTF = new JTextField(25);
+        JTextField  leaseNumTF = new JTextField(25),
+                    invoiceNumTF = new JTextField(25),
+                    dateTF = new JTextField(25);
 
         JTextArea workDoneTA = new JTextArea(10, 25);
 
@@ -409,10 +433,13 @@ public class HomeGUI implements ActionListener{
             }
         });
 
-        createServiceRecord.setLayout(new GridLayout(5, 2));
+        createServiceRecord.setLayout(new GridLayout(6, 2));
 
         createServiceRecord.add(back);
         createServiceRecord.add(new JLabel());
+
+        createServiceRecord.add(leaseNum);
+        createServiceRecord.add(leaseNumTF);
 
         createServiceRecord.add(invoiceNum);
         createServiceRecord.add(invoiceNumTF);
@@ -432,7 +459,7 @@ public class HomeGUI implements ActionListener{
         JPanel createPayment = new JPanel();
 
         JButton backBtn = new JButton("Back"),
-                paymentBtn = new JButton("Make Payment");
+                paymentBtn = new JButton("Record Payment");
 
         JLabel	nameLbl = new JLabel("Name on card:", SwingConstants.RIGHT),
                 numLbl = new JLabel("Card Number:", SwingConstants.RIGHT),
@@ -485,23 +512,28 @@ public class HomeGUI implements ActionListener{
         JButton back = new JButton("Back"),
                 submit = new JButton("Submit");
 
-        JLabel	registrationNum = new JLabel("Registration Number:"),
-                length = new JLabel("Length(feet):"),
-                fuelType = new JLabel("Fuel Type:"),
-                engineNum = new JLabel("Number of Engines:"),
-                engineType = new JLabel("Type of Engine(s):");
+        JLabel	leaseSlipNumber = new JLabel("Lease Slip Number:", SwingConstants.RIGHT),
+                registrationNum = new JLabel("Registration Number:", SwingConstants.RIGHT),
+                length = new JLabel("Length(feet):", SwingConstants.RIGHT),
+                fuelType = new JLabel("Fuel Type:", SwingConstants.RIGHT),
+                engineNum = new JLabel("Number of Engines:", SwingConstants.RIGHT),
+                engineType = new JLabel("Type of Engine(s):", SwingConstants.RIGHT);
 
-        JTextField  registrationNumTF = new JTextField(12),
-                lengthTF = new JTextField(12),
-                fuelTypeTF = new JTextField(12),
-                engineNumTF = new JTextField(12),
-                engineTypeTF = new JTextField(12);
+        JTextField  leaseSlipNumberTF = new JTextField(12),
+                    registrationNumTF = new JTextField(12),
+                    lengthTF = new JTextField(12),
+                    fuelTypeTF = new JTextField(12),
+                    engineNumTF = new JTextField(12),
+                    engineTypeTF = new JTextField(12);
 
 
-        createPowerboat.setLayout(new GridLayout(7,2));
+        createPowerboat.setLayout(new GridLayout(8,2));
 
         createPowerboat.add(back);
         createPowerboat.add(new JLabel());
+
+        createPowerboat.add(leaseSlipNumber);
+        createPowerboat.add(leaseSlipNumberTF);
 
         createPowerboat.add(registrationNum);
         createPowerboat.add(registrationNumTF);
@@ -528,6 +560,8 @@ public class HomeGUI implements ActionListener{
             }
         });
 
+
+
         return createPowerboat;
     }
 
@@ -537,25 +571,30 @@ public class HomeGUI implements ActionListener{
         JButton back = new JButton("Back"),
                 submit = new JButton("Submit");
 
-        JLabel	registrationNum = new JLabel("Registration Number:"),
-                length = new JLabel("Length(feet):"),
-                fuelType = new JLabel("Fuel Type"),
-                keelHeight = new JLabel("Keel Height:"),
-                hasEngine = new JLabel("Have an engine:"),
-                sailNum = new JLabel("Number of Sails:");
+        JLabel	leaseSlipNumber = new JLabel("Lease Slip Number:", SwingConstants.RIGHT),
+                registrationNum = new JLabel("Registration Number:", SwingConstants.RIGHT),
+                length = new JLabel("Length(feet):", SwingConstants.RIGHT),
+                fuelType = new JLabel("Fuel Type", SwingConstants.RIGHT),
+                keelHeight = new JLabel("Keel Height:", SwingConstants.RIGHT),
+                hasEngine = new JLabel("Have an engine:", SwingConstants.RIGHT),
+                sailNum = new JLabel("Number of Sails:", SwingConstants.RIGHT);
 
-        JTextField  registrationNumTF = new JTextField(12),
-                lengthTF = new JTextField(12),
-                fuelTypeTF = new JTextField(12),
-                keelHeightTF = new JTextField(12),
-                hasEngineTF = new JTextField(12),
-                sailNumTF = new JTextField(12);
+        JTextField  leaseSlipNumberTF = new JTextField(12),
+                    registrationNumTF = new JTextField(12),
+                    lengthTF = new JTextField(12),
+                    fuelTypeTF = new JTextField(12),
+                    keelHeightTF = new JTextField(12),
+                    hasEngineTF = new JTextField(12),
+                    sailNumTF = new JTextField(12);
 
 
-        createSailboat.setLayout(new GridLayout(8,2));
+        createSailboat.setLayout(new GridLayout(9,2));
 
         createSailboat.add(back);
         createSailboat.add(new JLabel());
+
+        createSailboat.add(leaseSlipNumber);
+        createSailboat.add(leaseSlipNumberTF);
 
         createSailboat.add(registrationNum);
         createSailboat.add(registrationNumTF);
@@ -1120,7 +1159,7 @@ public class HomeGUI implements ActionListener{
     public JPanel FinancialMenu(){
         JPanel financialMenu = new JPanel();
 
-        JButton paymentBtn = new JButton("Make A Payment"),
+        JButton paymentBtn = new JButton("Record A Payment"),
                 backBtn = new JButton("Back");
 
         backBtn.addActionListener(new ActionListener(){
