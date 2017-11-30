@@ -203,11 +203,11 @@ public class HomeGUI implements ActionListener{
         JPanel createMenu = new JPanel();
 
         JButton back = new JButton("Back"),
-                customer = new JButton("Create a Customer"),
-                lease = new JButton("Create a Lease"),
+                customer = new JButton("Add a new Customer"),
+                lease = new JButton("Add a new Lease"),
                 serviceRecord = new JButton("Create a Service Record"),
-                sailBoat = new JButton("Create a Sail Boat"),
-                powerBoat = new JButton("Create a Power Boat");
+                sailBoat = new JButton("Add a new Sailboat"),
+                powerBoat = new JButton("Add a new Powerboat");
 
         back.addActionListener(new ActionListener(){
             @Override
@@ -256,8 +256,10 @@ public class HomeGUI implements ActionListener{
                 cl.show(cards, CREATE_POWERBOAT);
             }
         });
+        createMenu.setLayout(new GridLayout(4, 2));
 
         createMenu.add(back);
+        createMenu.add(new JLabel());
         createMenu.add(customer);
         createMenu.add(lease);
         createMenu.add(serviceRecord);
@@ -271,8 +273,8 @@ public class HomeGUI implements ActionListener{
         JPanel createCustomer = new JPanel();
 
         final  String   FIRSTNAME = "First Name",
-                LASTNAME = "Last Name",
-                LICENSE = "Boating License Number";
+                        LASTNAME = "Last Name",
+                        LICENSE = "Boating License Number";
 
         JButton back = new JButton("Back"),
                 submit = new JButton("Submit");
@@ -432,11 +434,11 @@ public class HomeGUI implements ActionListener{
         JButton backBtn = new JButton("Back"),
                 paymentBtn = new JButton("Make Payment");
 
-        JLabel	nameLbl = new JLabel("Name on card:"),
-                numLbl = new JLabel("Card Number:"),
-                securityLbl = new JLabel("Security Code:"),
-                dateLbl = new JLabel("Expiration Date:"),
-                totalLbl = new JLabel("Total Amount Due: $0.00");	//TODO: change this later to reflect actual cost
+        JLabel	nameLbl = new JLabel("Name on card:", SwingConstants.RIGHT),
+                numLbl = new JLabel("Card Number:", SwingConstants.RIGHT),
+                securityLbl = new JLabel("Security Code:", SwingConstants.RIGHT),
+                dateLbl = new JLabel("Expiration Date:", SwingConstants.RIGHT),
+                totalLbl = new JLabel("Total Amount Due: $0.00", SwingConstants.CENTER);	//TODO: change this later to reflect actual cost
 
         JTextField  nameField = new JTextField(12),
                 numField = new JTextField(12),
@@ -445,8 +447,8 @@ public class HomeGUI implements ActionListener{
 
         createPayment.setLayout(new GridLayout(6,2));
 
-        createPayment.add(new JLabel());
         createPayment.add(backBtn);
+        createPayment.add(new JLabel());
 
         createPayment.add(nameLbl);
         createPayment.add(nameField);
@@ -460,8 +462,8 @@ public class HomeGUI implements ActionListener{
         createPayment.add(dateLbl);
         createPayment.add(dateField);
 
-        createPayment.add(totalLbl);
         createPayment.add(paymentBtn);
+        createPayment.add(totalLbl);
 
         //add action listeners
         backBtn.addActionListener(new ActionListener(){
@@ -844,7 +846,7 @@ public class HomeGUI implements ActionListener{
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 //for database connection
-                result = db.searchCustByName(fNameTF.getText(), lNameTF.getText());
+                result = db.searchCustByLicense(Integer.parseInt(licTF.getText()));
                 try {
                     while (result.next()) {
                         fNameTF.setText(result.getString("firstName"));
@@ -864,14 +866,14 @@ public class HomeGUI implements ActionListener{
         custSearch.add(back);
         custSearch.add(new JLabel());
 
+        custSearch.add(lic);
+        custSearch.add(licTF);
+
         custSearch.add(fName);
         custSearch.add(fNameTF);
 
         custSearch.add(lName);
         custSearch.add(lNameTF);
-
-        custSearch.add(lic);
-        custSearch.add(licTF);
 
         custSearch.add(submit);
 
@@ -941,8 +943,10 @@ public class HomeGUI implements ActionListener{
             }
         });
 
+        searchMenu.setLayout(new GridLayout(4, 2));
 
         searchMenu.add(back);
+        searchMenu.add(new JLabel());
         searchMenu.add(customer);
         searchMenu.add(lease);
         searchMenu.add(powerboat);
@@ -974,11 +978,11 @@ public class HomeGUI implements ActionListener{
                 createPowerboat,
                 createSailboat;
 
-        createCustomer = new JMenuItem("Create New Customer");
-        createLease = new JMenuItem("Create New Lease");
-        createServiceRecord = new JMenuItem("Create Service Record");
-        createPowerboat = new JMenuItem("Create Powerboat");
-        createSailboat = new JMenuItem("Create Sailboat");
+        createCustomer = new JMenuItem("Add a New Customer");
+        createLease = new JMenuItem("Add a New Lease");
+        createServiceRecord = new JMenuItem("Create a Service Record");
+        createPowerboat = new JMenuItem("Add a Powerboat");
+        createSailboat = new JMenuItem("Add a new Sailboat");
 
         createCustomer.addActionListener(new ActionListener() {
             @Override
@@ -1096,8 +1100,8 @@ public class HomeGUI implements ActionListener{
         createBill.add(serviceBill);
 
         JMenuItem recordPayment,
-                lateNotice,
-                accountsReceivable;
+                    lateNotice,
+                    accountsReceivable;
 
         recordPayment = new JMenuItem("Record Payment");
         lateNotice = new JMenuItem("Late Notices");

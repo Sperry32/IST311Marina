@@ -8,7 +8,7 @@ public class MarinaDatabase {
     Connection connection = null;
     Statement statement = null;
     ResultSet rSet = null;
-    PreparedStatement searchCustByName = null;
+    PreparedStatement searchCustByLicense = null;
     PreparedStatement searchPowerBoatByRegNum = null;
     PreparedStatement searchSailBoatByRegNum = null;
     PreparedStatement searchLeaseBySlipNum = null;
@@ -32,16 +32,15 @@ public class MarinaDatabase {
         }
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public ResultSet searchCustByName(String fName, String lName) {
+    public ResultSet searchCustByLicense(int license) {
         try
         {
-            searchCustByName = connection.prepareStatement(
-                    "SELECT * FROM Customer WHERE firstName = ? AND lastName = ?");
+            searchCustByLicense = connection.prepareStatement(
+                    "SELECT * FROM Customer WHERE boatingLicense = ?");
 
-            searchCustByName.setString(1, fName);
-            searchCustByName.setString(2, lName);
+            searchCustByLicense.setInt(1, license);
 
-            rSet = searchCustByName.executeQuery();
+            rSet = searchCustByLicense.executeQuery();
 
             return rSet;
         }
