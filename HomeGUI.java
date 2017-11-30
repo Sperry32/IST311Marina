@@ -175,6 +175,8 @@ public class HomeGUI implements ActionListener{
                 financial = new JButton("Financial"),
                 search = new JButton("Search");
 
+      
+        
         newBtn.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -201,6 +203,14 @@ public class HomeGUI implements ActionListener{
         homeMenu.add(financial);
         homeMenu.add(search);
 
+        homeMenu.add(new JButton("Sailboats"));
+        homeMenu.add(new JButton("PowerBoats"));
+        
+        newBtn.setBackground(Color.red);
+        boolean arr[] = new boolean[50];
+        for(int i = 0; i < 100; i++){
+        	homeMenu.add(new JButton(String.valueOf(i+1))); 
+        }
         return homeMenu;
     }
 
