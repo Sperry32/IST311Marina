@@ -9,6 +9,10 @@ public class MarinaDatabase {
     Statement statement = null;
     ResultSet rSet = null;
     PreparedStatement searchCustByName = null;
+    PreparedStatement searchPowerBoatByRegNum = null;
+    PreparedStatement searchSailBoatByRegNum = null;
+    PreparedStatement searchLeaseBySlipNum = null;
+    PreparedStatement searchMaintenanceByInvoiceNumber = null;
     PreparedStatement addNewCust = null;
     PreparedStatement addNewLease = null;
     PreparedStatement addNewPowerboat = null;
@@ -89,16 +93,16 @@ public class MarinaDatabase {
         }
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////    
-    public ResultSet searchCustByName(String fName, String lName) {
+    public ResultSet searchLeaseBySlipNum(int slipNum) {
         try
         {
             searchCustByName = connection.prepareStatement(
-                    "SELECT firstName, lastName, boatingLicense FROM Customer WHERE firstName = ? AND lastName = ?");
+                    "SELECT slipNumber, slotNumber, duration, rate, expirationDate FROM Lease WHERE slipNumber = ?");
 
-            searchCustByName.setString(1, fName);
-            searchCustByName.setString(2, lName);
+            searchLeaseBySlipNum.setInt(1, slipNumber);
+           
 
-            rSet = searchCustByName.executeQuery();
+            rSet = searchLeaseBySlipNum.executeQuery();
 
             return rSet;
         }
@@ -110,16 +114,15 @@ public class MarinaDatabase {
         }
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////    
-    public ResultSet searchCustByName(String fName, String lName) {
+    public ResultSet searchMaintenanceByInvoiceNumber(int invoiceNumber) {
         try
         {
-            searchCustByName = connection.prepareStatement(
-                    "SELECT firstName, lastName, boatingLicense FROM Customer WHERE firstName = ? AND lastName = ?");
+            searchMaintenanceByInvoiceNumber = connection.prepareStatement(
+                    "SELECT invoiceNum, dateOfMaintenance, workDone FROM Maintenance WHERE invoiceNum = ?");
 
-            searchCustByName.setString(1, fName);
-            searchCustByName.setString(2, lName);
+          searchMaintenanceByInvoiceNumber.setInt(1, invoiceNumber);
 
-            rSet = searchCustByName.executeQuery();
+            rSet = searchMaintenanceByInvoiceNumber.executeQuery();
 
             return rSet;
         }
