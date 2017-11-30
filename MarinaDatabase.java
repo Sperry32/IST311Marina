@@ -4,7 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 public class MarinaDatabase {
-    static final String DATABASE_URL = "jdbc:ucanaccess://C:/Users/ambergholson/Desktop/Marina.accdb";
+    static final String DATABASE_URL = "jdbc:ucanaccess://X:/My Documents/Marina.accdb";
     Connection connection = null;
     Statement statement = null;
     ResultSet rSet = null;
@@ -153,7 +153,7 @@ public class MarinaDatabase {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
     public void addNewPowerboat(int registrationNumber, double size, String fuelType, int numEngines, String engineType){
         try{
-            addNewPowerboat = connection.prepareStatement("INSERT INTO POWERBOAT(registrationNum, size, fuelType, numEngines, engineType) VALUES(?, ?, ?, ?, ?)");
+            addNewPowerboat = connection.prepareStatement("INSERT INTO POWERBOAT(registrationNumber, size, fuelType, numEngines, engineType) VALUES(?, ?, ?, ?, ?)");
 
             addNewPowerboat.setInt(1, registrationNumber);
             addNewPowerboat.setDouble(2, size);
@@ -173,7 +173,7 @@ public class MarinaDatabase {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
     public void addNewSailboat(int registrationNumber, double size, String fuelType, double keelHeight, boolean hasEngine, int sailNum){
         try{
-            addNewSailboat = connection.prepareStatement("INSERT INTO SAILBOAT(registrationNum, size, fuelType, keelHeight, hasEngine, sailNum) VALUES(?, ?, ?, ?, ?, ?)");
+            addNewSailboat = connection.prepareStatement("INSERT INTO SAILBOAT(registrationNumber, size, fuelType, keelHeight, hasEngine, sailNum) VALUES(?, ?, ?, ?, ?, ?)");
 
             addNewSailboat.setInt(1, registrationNumber);
             addNewSailboat.setDouble(2, size);
@@ -192,7 +192,7 @@ public class MarinaDatabase {
         }
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
-    public void addNewLease(int slipNumber, int slotNumber, int duration, double rate, Date expirationDate, int boatingLicense){
+    public void addNewLease(int slipNumber, int slotNumber, int duration, double rate, java.sql.Date expirationDate, int boatingLicense){
         try{
             addNewLease = connection.prepareStatement("INSERT INTO LEASE(slipNumber, slotNumber, duration, rate, expirationDate) VALUES(?, ?, ?, ?, ?)");
 
@@ -210,23 +210,13 @@ public class MarinaDatabase {
             addNewboatLeases = connection.prepareStatement("INSERT INTO BOATLEASES(slipNumber, registrationNumber) VALUES(?, ?)");
             addNewboatLeases.setInt(1, slipNumber);
             addNewboatLeases.setInt(2, boatingLicense);
-
-            /*
-            //System.out.println("Lease Created!");
-            int ans2 = addNewLease.executeUpdate();
-            */
-
-             /*
+            addNewboatLeases.executeUpdate();
+            
+           
             addNewcustomerLeases = connection.prepareStatement("INSERT INTO CUSTOMERLEASES(boatingLicense, slipNumber) VALUES(?, ?)");
-            addNewboatLeases.setInt(1, boatingLicense);
-            addNewboatLeases.setInt(2, slipNumber);
-
-
-            //System.out.println("Lease Created!");
-            int ans3 = addNewLease.executeUpdate();
-            */
-
-            //possible location for boatLeases and customerLeases code
+            addNewcustomerLeases.setInt(1, boatingLicense);
+            addNewcustomerLeases.setInt(2, slipNumber);
+            addNewcustomerLeases.executeUpdate();
 
         }
         catch(Exception e){
@@ -235,12 +225,12 @@ public class MarinaDatabase {
         }
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
-    public void addNewMaintenance(int invoiceNum, String dateOfMaintenance, String workDone, int registrationNumber){
+    public void addNewMaintenance(int invoiceNum, java.sql.Date dateOfMaintenance, String workDone, int registrationNumber){
         try{
-            addNewMaintenance = connection.prepareStatement("INSERT INTO MAINTENANCE(invoiceNum, dateOfMaintenance, workDone) VALUES(?, ?, ?)");
+            addNewMaintenance = connection.prepareStatement("INSERT INTO MAINTENANCE(invoiceNumber, dateOfMaintenance, workDone) VALUES(?, ?, ?)");
 
             addNewMaintenance.setInt(1, invoiceNum);
-            addNewMaintenance.setString(2, dateOfMaintenance);
+            addNewMaintenance.setDate(2, dateOfMaintenance);
             addNewMaintenance.setString(3, workDone);
 
             System.out.println("Maintenance record created!");

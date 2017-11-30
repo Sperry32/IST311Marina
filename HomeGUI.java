@@ -2,9 +2,13 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 public class HomeGUI implements ActionListener{
     JPanel cards;
+    
+    SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
     final String    HOME_MENU = "Home Menu",
             SEARCH_MENU = "Search Menu",
             CREATE_MENU = "Create Menu",
@@ -28,6 +32,7 @@ public class HomeGUI implements ActionListener{
 
 
     public static void main(String args[]){
+    	
         createAndShowGUI();
     }
 
@@ -279,13 +284,13 @@ public class HomeGUI implements ActionListener{
         JButton back = new JButton("Back"),
                 submit = new JButton("Submit");
 
-        JLabel  fName = new JLabel(FIRSTNAME, SwingConstants.RIGHT),
-                lName = new JLabel(LASTNAME, SwingConstants.RIGHT),
-                lic = new JLabel(LICENSE, SwingConstants.RIGHT);
+        JLabel 	lic = new JLabel(LICENSE, SwingConstants.RIGHT),
+        		fName = new JLabel(FIRSTNAME, SwingConstants.RIGHT),
+                lName = new JLabel(LASTNAME, SwingConstants.RIGHT);
 
-        JTextField  fNameTF = new JTextField(25),
-                lNameTF = new JTextField(25),
-                licTF = new JTextField(25);
+        JTextField  licTF = new JTextField(25),
+        			fNameTF = new JTextField(25),
+	                lNameTF = new JTextField(25);
 
         back.addActionListener(new ActionListener(){
             @Override
@@ -331,7 +336,7 @@ public class HomeGUI implements ActionListener{
         final String    CUSTREGNUM      = "Customer License Number",
                         BOATSLOT        = "Boat slot",
                         RATE            = "Rate",
-                        EXPIRATIONDATE  = "Expiration Date",
+                        EXPIRATIONDATE  = "Expiration Date (yyyy-mm-dd)",
                         DURATION        = "Duration",
                         SLIPNUMBER      = "Slip Number";
 
@@ -367,7 +372,7 @@ public class HomeGUI implements ActionListener{
                 int boatingLicense = Integer.parseInt(boatingLicenseTF.getText());
                 int slipNum = Integer.parseInt(slipNumTF.getText());
                 int boatSlot = Integer.parseInt(boatSlotTF.getText());
-                Date expirationDate = Date.valueOf(expirationDateTF.getText());
+                java.sql.Date expirationDate = java.sql.Date.valueOf(expirationDateTF.getText());
                 int duration = Integer.parseInt(durationTF.getText());
                 double rate = Double.parseDouble(rateTF.getText());
 
@@ -433,6 +438,18 @@ public class HomeGUI implements ActionListener{
             }
         });
 
+        submit.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int slipNum = Integer.parseInt(leaseNumTF.getText());
+                java.sql.Date date = java.sql.Date.valueOf(dateTF.getText());
+                String workDone = workDoneTA.getText();
+                int invoiceNum = Integer.parseInt(invoiceNumTF.getText());
+                
+                db.addNewMaintenance(invoiceNum, date, workDone, slipNum);
+            }
+        });
+        
         createServiceRecord.setLayout(new GridLayout(6, 2));
 
         createServiceRecord.add(back);
@@ -560,7 +577,18 @@ public class HomeGUI implements ActionListener{
             }
         });
 
-
+        submit.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	int registrationNumber = Integer.parseInt(registrationNumTF.getText());
+            	Double size = Double.parseDouble(lengthTF.getText());
+            	String fuelType = fuelTypeTF.getText();
+            	int numEngines = Integer.parseInt(engineNumTF.getText());
+            	String engineType = engineTypeTF.getText();
+            	
+            	db.addNewPowerboat(registrationNumber, size, fuelType, numEngines, engineType);
+            }
+        });
 
         return createPowerboat;
     }
@@ -623,6 +651,21 @@ public class HomeGUI implements ActionListener{
                 cl.show(cards, CREATE_MENU);
             }
         });
+        
+        submit.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	int registrationNumber = Integer.parseInt(registrationNumTF.getText());
+            	Double size = Double.parseDouble(lengthTF.getText());
+            	String fuelType = fuelTypeTF.getText();
+            	double keelHeight = Double.parseDouble(keelHeightTF.getText());
+            	boolean hasEngine = Boolean.parseBoolean(hasEngineTF.getText());
+            	int sailNum = Integer.parseInt(sailNumTF.getText());
+            	
+            	db.addNewSailboat(registrationNumber, size, fuelType, keelHeight, hasEngine, sailNum);
+            }
+        });
+        
         return createSailboat;
     }
     public JPanel serviceSearch(){
@@ -643,7 +686,8 @@ public class HomeGUI implements ActionListener{
                     dateTF = new JTextField(25);
 
         JTextArea workDoneTA = new JTextArea(10, 25);
-
+        workDoneTA.setLineWrap(true);
+        
         serviceSearch.setLayout(new GridLayout(5, 2));
 
         back.addActionListener(new ActionListener(){
