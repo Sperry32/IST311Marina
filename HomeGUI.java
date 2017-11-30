@@ -6,25 +6,26 @@ import java.sql.*;
 public class HomeGUI implements ActionListener{
     JPanel cards;
     final String    HOME_MENU = "Home Menu",
-                    SEARCH_MENU = "Search Menu",
-                    CREATE_MENU = "Create Menu",
-                    FINANCIAL_MENU = "Financial Menu",
-                    CUSTOMER_SEARCH = "Customer Panel",
-                    BOAT_SEARCH = "Boat Panel",
-                    LEASE_SEARCH = "Lease Search",
-                    SERVICE_RECORD_SEARCH = "Service Record Search",
-                    CREATE_CUSTOMER = "Create Customer",
-                    CREATE_LEASE = "Create Lease",
-                    CREATE_SERVICE_RECORD = "Create Service Record",
-                    CREATE_PAYMENT = "Create Payment",
-                    CREATE_SAILBOAT = "Create Sailboat",
-                    CREATE_POWERBOAT = "Create Powerboat";
+            SEARCH_MENU = "Search Menu",
+            CREATE_MENU = "Create Menu",
+            FINANCIAL_MENU = "Financial Menu",
+            CUSTOMER_SEARCH = "Customer Panel",
+            SAILBOAT_SEARCH = "Sailboat Search",
+            POWERBOAT_SEARCH = "Powerboat Search",
+            LEASE_SEARCH = "Lease Search",
+            SERVICE_RECORD_SEARCH = "Service Record Search",
+            CREATE_CUSTOMER = "Create Customer",
+            CREATE_LEASE = "Create Lease",
+            CREATE_SERVICE_RECORD = "Create Service Record",
+            CREATE_PAYMENT = "Create Payment",
+            CREATE_SAILBOAT = "Create Sailboat",
+            CREATE_POWERBOAT = "Create Powerboat";
 
 
     MarinaDatabase db = new MarinaDatabase();
     //search by customer
     static ResultSet result = null;
-    
+
 
     public static void main(String args[]){
         createAndShowGUI();
@@ -53,9 +54,10 @@ public class HomeGUI implements ActionListener{
                 createServiceRecord = createServiceRecord(),
                 createLease = createLease(),
                 custSearch = custSearch(),
-                boatSearch = boatSearch(),
+                powerboatSearch = powerboatSearch(),
+                sailboatSearch  = sailboatSearch(),
                 leaseSearch = leaseSearch(),
-                serviceSearch = serviceSearch(), 
+                serviceSearch = serviceSearch(),
                 createPayment = createPayment(),
                 createPowerboat = createPowerboat(),
                 createSailboat = createSailboat();
@@ -71,7 +73,8 @@ public class HomeGUI implements ActionListener{
         cards.add(createLease, CREATE_LEASE);
         cards.add(createMenu, CREATE_MENU);
         cards.add(custSearch, CUSTOMER_SEARCH);
-        cards.add(boatSearch, BOAT_SEARCH);
+        cards.add(sailboatSearch, SAILBOAT_SEARCH);
+        cards.add(powerboatSearch, POWERBOAT_SEARCH);
         cards.add(leaseSearch, LEASE_SEARCH);
         cards.add(serviceSearch, SERVICE_RECORD_SEARCH);
         cards.add(createPayment, CREATE_PAYMENT);
@@ -86,10 +89,10 @@ public class HomeGUI implements ActionListener{
         JPanel leaseSearch = new JPanel();
 
         final String    BOATSLOT = "Boat slot",
-                        RATE = "Rate",
-                        EXPIRATIONDATE = "Expiration Date",
-                        DURATION = "Duration",
-                        SLIPNUMBER = "Slip Number";
+                RATE = "Rate",
+                EXPIRATIONDATE = "Expiration Date",
+                DURATION = "Duration",
+                SLIPNUMBER = "Slip Number";
 
         JButton back = new JButton("Back"),
                 submit = new JButton("Submit");
@@ -111,6 +114,27 @@ public class HomeGUI implements ActionListener{
             public void actionPerformed(ActionEvent e) {
                 CardLayout cl = (CardLayout)(cards.getLayout());
                 cl.show(cards, SEARCH_MENU);
+            }
+        });
+
+        submit.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent args0) {
+                result = db.searchLeaseBySlipNum(Integer.parseInt(slipNumTF.getText()));
+                try {
+                    while (result.next()) {
+                        slipNumTF.setText(Integer.toString(result.getInt("slipNumber")));
+                        boatSlotTF.setText(Integer.toString(result.getInt("slotNumber")));
+                        expirationDateTF.setText(String.valueOf((Date)result.getDate("expirationDate")));
+                        durationTF.setText(result.getString("duration"));
+                        rateTF.setText(Double.toString(result.getDouble("rate")));
+                    }
+                }
+                catch(SQLException e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(null, e.getMessage(), "No Reults from Search", JOptionPane.ERROR_MESSAGE);
+                }
+
             }
         });
 
@@ -161,11 +185,11 @@ public class HomeGUI implements ActionListener{
             }
         });
         financial.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				CardLayout cl = (CardLayout)(cards.getLayout());
-				cl.show(cards, FINANCIAL_MENU);
-			}
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CardLayout cl = (CardLayout)(cards.getLayout());
+                cl.show(cards, FINANCIAL_MENU);
+            }
         });
 
         homeMenu.add(newBtn);
@@ -247,8 +271,8 @@ public class HomeGUI implements ActionListener{
         JPanel createCustomer = new JPanel();
 
         final  String   FIRSTNAME = "First Name",
-                		LASTNAME = "Last Name",
-                		LICENSE = "Boating License Number";
+                LASTNAME = "Last Name",
+                LICENSE = "Boating License Number";
 
         JButton back = new JButton("Back"),
                 submit = new JButton("Submit");
@@ -303,10 +327,10 @@ public class HomeGUI implements ActionListener{
         JPanel createLease = new JPanel();
 
         final String    BOATSLOT = "Boat slot",
-                        RATE = "Rate",
-                        EXPIRATIONDATE = "Expiration Date",
-                        DURATION = "Duration",
-                        SLIPNUMBER = "Slip Number";
+                RATE = "Rate",
+                EXPIRATIONDATE = "Expiration Date",
+                DURATION = "Duration",
+                SLIPNUMBER = "Slip Number";
 
         JButton back = new JButton("Back"),
                 submit = new JButton("Submit");
@@ -355,13 +379,13 @@ public class HomeGUI implements ActionListener{
 
         return createLease;
     }
-    
+
     public JPanel createServiceRecord(){
         JPanel createServiceRecord = new JPanel();
 
         final String    INVOICENUMBER = "Invoice #",
-                        DATEOFMAINT = "Date of Maintenance",
-                        WORKDONE = "Work Done";
+                DATEOFMAINT = "Date of Maintenance",
+                WORKDONE = "Work Done";
 
         JButton back = new JButton("Back"),
                 submit = new JButton("Submit");
@@ -401,56 +425,56 @@ public class HomeGUI implements ActionListener{
 
         return createServiceRecord;
     }
-    
-    public JPanel createPayment(){
-    	JPanel createPayment = new JPanel();
-    	
-    	JButton backBtn = new JButton("Back"),
-    			paymentBtn = new JButton("Make Payment");
-    	
-    	JLabel	nameLbl = new JLabel("Name on card:"),
-    			numLbl = new JLabel("Card Number:"),
-    			securityLbl = new JLabel("Security Code:"),
-    			dateLbl = new JLabel("Expiration Date:"),
-    			totalLbl = new JLabel("Total Amount Due: $0.00");	//TODO: change this later to reflect actual cost
-    			
-    	JTextField  nameField = new JTextField(12),
-    				numField = new JTextField(12),
-    				securityField = new JTextField(12),
-    				dateField = new JTextField(12);
-    	
-    	createPayment.setLayout(new GridLayout(6,2));
 
-    	createPayment.add(new JLabel());
-    	createPayment.add(backBtn);
-    	
-    	createPayment.add(nameLbl);
-    	createPayment.add(nameField);
-    	
-    	createPayment.add(numLbl);
-    	createPayment.add(numField);
-    	
-    	createPayment.add(securityLbl);
-    	createPayment.add(securityField);
-    	
-    	createPayment.add(dateLbl);
-    	createPayment.add(dateField);
-    	
-    	createPayment.add(totalLbl);
-    	createPayment.add(paymentBtn);
-    	
-    	//add action listeners
-    	backBtn.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				CardLayout cl = (CardLayout)(cards.getLayout());
-				cl.show(cards, FINANCIAL_MENU);
-			}		
-    	});
-    	
-    	//add action listener for make payment button...
-    	
-    	return createPayment;
+    public JPanel createPayment(){
+        JPanel createPayment = new JPanel();
+
+        JButton backBtn = new JButton("Back"),
+                paymentBtn = new JButton("Make Payment");
+
+        JLabel	nameLbl = new JLabel("Name on card:"),
+                numLbl = new JLabel("Card Number:"),
+                securityLbl = new JLabel("Security Code:"),
+                dateLbl = new JLabel("Expiration Date:"),
+                totalLbl = new JLabel("Total Amount Due: $0.00");	//TODO: change this later to reflect actual cost
+
+        JTextField  nameField = new JTextField(12),
+                numField = new JTextField(12),
+                securityField = new JTextField(12),
+                dateField = new JTextField(12);
+
+        createPayment.setLayout(new GridLayout(6,2));
+
+        createPayment.add(new JLabel());
+        createPayment.add(backBtn);
+
+        createPayment.add(nameLbl);
+        createPayment.add(nameField);
+
+        createPayment.add(numLbl);
+        createPayment.add(numField);
+
+        createPayment.add(securityLbl);
+        createPayment.add(securityField);
+
+        createPayment.add(dateLbl);
+        createPayment.add(dateField);
+
+        createPayment.add(totalLbl);
+        createPayment.add(paymentBtn);
+
+        //add action listeners
+        backBtn.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CardLayout cl = (CardLayout)(cards.getLayout());
+                cl.show(cards, FINANCIAL_MENU);
+            }
+        });
+
+        //add action listener for make payment button...
+
+        return createPayment;
     }
 
     public JPanel createPowerboat(){
@@ -466,10 +490,10 @@ public class HomeGUI implements ActionListener{
                 engineType = new JLabel("Type of Engine(s):");
 
         JTextField  registrationNumTF = new JTextField(12),
-                    lengthTF = new JTextField(12),
-                    fuelTypeTF = new JTextField(12),
-                    engineNumTF = new JTextField(12),
-                    engineTypeTF = new JTextField(12);
+                lengthTF = new JTextField(12),
+                fuelTypeTF = new JTextField(12),
+                engineNumTF = new JTextField(12),
+                engineTypeTF = new JTextField(12);
 
 
         createPowerboat.setLayout(new GridLayout(7,2));
@@ -519,11 +543,11 @@ public class HomeGUI implements ActionListener{
                 sailNum = new JLabel("Number of Sails:");
 
         JTextField  registrationNumTF = new JTextField(12),
-                    lengthTF = new JTextField(12),
-                    fuelTypeTF = new JTextField(12),
-                    keelHeightTF = new JTextField(12),
-                    hasEngineTF = new JTextField(12),
-                    sailNumTF = new JTextField(12);
+                lengthTF = new JTextField(12),
+                fuelTypeTF = new JTextField(12),
+                keelHeightTF = new JTextField(12),
+                hasEngineTF = new JTextField(12),
+                sailNumTF = new JTextField(12);
 
 
         createSailboat.setLayout(new GridLayout(8,2));
@@ -589,6 +613,23 @@ public class HomeGUI implements ActionListener{
             }
         });
 
+        submit.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                result = db.searchMaintenanceByInvoiceNumber(Integer.parseInt(invoiceNumTF.getText()));
+                try {
+                    while (result.next()) {
+                        invoiceNumTF.setText(Integer.toString(result.getInt("invoiceNumber")));
+                        dateTF.setText(String.valueOf((Date)result.getDate("dateOfMaintenance")));
+                        workDoneTA.setText(result.getString("workDone"));
+                    }
+                }
+                catch(SQLException e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(null, e.getMessage(), "No Reults from Search", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
         serviceSearch.add(back);
         serviceSearch.add(new JLabel());
 
@@ -606,24 +647,54 @@ public class HomeGUI implements ActionListener{
         return serviceSearch;
     }
 
-    public JPanel boatSearch(){
+    public JPanel powerboatSearch(){
 
-        JPanel boatSearch = new JPanel();
+        JPanel powerboatSearch = new JPanel();
 
         final String    REGISTRATIONNUM = "Registration Number",
                         LENGTH = "Length",
-                        FUELTYPE = "Fuel Type";
+                        FUELTYPE = "Fuel Type",
+                        ENGINENUM = "Engine Num",
+                        ENGINETYPE = "Engine Type";
 
         JButton back = new JButton("Back"),
                 submit = new JButton("Submit");
 
         JLabel  regNum = new JLabel(REGISTRATIONNUM, SwingConstants.RIGHT),
                 length = new JLabel(LENGTH, SwingConstants.RIGHT),
-                fuelType = new JLabel(FUELTYPE, SwingConstants.RIGHT);
+                fuelType = new JLabel(FUELTYPE, SwingConstants.RIGHT),
+                engineNum = new JLabel(ENGINENUM, SwingConstants.RIGHT),
+                engineType = new JLabel(ENGINETYPE, SwingConstants.RIGHT);
+
 
         JTextField  regNumTF = new JTextField(25),
                     lengthTF = new JTextField(25),
-                    fuelTypeTF = new JTextField(25);
+                    fuelTypeTF = new JTextField(25),
+                    engineNumTF = new JTextField(25),
+                    engineTypeTF = new JTextField(25);
+
+        powerboatSearch.setLayout(new GridLayout(7, 2));
+
+        powerboatSearch.add(back);
+        powerboatSearch.add(new JLabel());
+
+        powerboatSearch.add(regNum);
+        powerboatSearch.add(regNumTF);
+
+        powerboatSearch.add(length);
+        powerboatSearch.add(lengthTF);
+
+        powerboatSearch.add(fuelType);
+        powerboatSearch.add(fuelTypeTF);
+
+
+        powerboatSearch.add(engineNum);
+        powerboatSearch.add(engineNumTF);
+
+        powerboatSearch.add(engineType);
+        powerboatSearch.add(engineTypeTF);
+
+        powerboatSearch.add(submit);
 
         back.addActionListener(new ActionListener(){
             @Override
@@ -633,33 +704,122 @@ public class HomeGUI implements ActionListener{
             }
         });
 
-        boatSearch.setLayout(new GridLayout(5, 2));
+        submit.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                //for database connection
+                result = db.searchPowerBoatByRegNum(Integer.parseInt(regNumTF.getText()));
+                try {
+                    while (result.next()) {
+                        regNumTF.setText(Integer.toString(result.getInt("registrationNumber")));
+                        lengthTF.setText(Integer.toString(result.getInt("size")));
+                        fuelTypeTF.setText(result.getString("fuelType"));
+                        engineNumTF.setText(Integer.toString(result.getInt("numEngines")));
+                        engineTypeTF.setText(result.getString("engineType"));
+                    }
+                }
+                catch(SQLException e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(null, e.getMessage(), "No Reults from Search", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
 
-        boatSearch.add(back);
-        boatSearch.add(new JLabel());
-
-        boatSearch.add(regNum);
-        boatSearch.add(regNumTF);
-
-        boatSearch.add(length);
-        boatSearch.add(lengthTF);
-
-        boatSearch.add(fuelType);
-        boatSearch.add(fuelTypeTF);
-
-        boatSearch.add(submit);
-
-        return boatSearch;
+        return powerboatSearch;
     }
 
+    public JPanel sailboatSearch(){
+
+        JPanel sailboatSearch = new JPanel();
+
+        final String    REGISTRATIONNUM = "Registration Number",
+                        LENGTH = "Length",
+                        FUELTYPE = "Fuel Type",
+                        KEELHEIGHT = "Keel Height",
+                        HASENGINE = "Has Engine",
+                        SAILNUM = "Sail Number";
+
+        JButton back = new JButton("Back"),
+                submit = new JButton("Submit");
+
+        JLabel  regNum = new JLabel(REGISTRATIONNUM, SwingConstants.RIGHT),
+                length = new JLabel(LENGTH, SwingConstants.RIGHT),
+                fuelType = new JLabel(FUELTYPE, SwingConstants.RIGHT),
+                keelHeight = new JLabel(KEELHEIGHT, SwingConstants.RIGHT),
+                hasEngine = new JLabel(HASENGINE, SwingConstants.RIGHT),
+                sailNumber = new JLabel(SAILNUM, SwingConstants.RIGHT);
+
+        JTextField  regNumTF = new JTextField(25),
+                    lengthTF = new JTextField(25),
+                    fuelTypeTF = new JTextField(25),
+                    keelHeightTF = new JTextField(25),
+                    hasEngineTF = new JTextField(25),
+                    sailNumberTF = new JTextField(25);
+
+        sailboatSearch.setLayout(new GridLayout(8, 2));
+
+        sailboatSearch.add(back);
+        sailboatSearch.add(new JLabel());
+
+        sailboatSearch.add(regNum);
+        sailboatSearch.add(regNumTF);
+
+        sailboatSearch.add(length);
+        sailboatSearch.add(lengthTF);
+
+        sailboatSearch.add(fuelType);
+        sailboatSearch.add(fuelTypeTF);
+
+        sailboatSearch.add(keelHeight);
+        sailboatSearch.add(keelHeightTF);
+
+        sailboatSearch.add(hasEngine);
+        sailboatSearch.add(hasEngineTF);
+
+        sailboatSearch.add(sailNumber);
+        sailboatSearch.add(sailNumberTF);
+
+        sailboatSearch.add(submit);
+
+        back.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CardLayout cl = (CardLayout)(cards.getLayout());
+                cl.show(cards, SEARCH_MENU);
+            }
+        });
+
+        submit.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                //for database connection
+                result = db.searchSailBoatByRegNum(Integer.parseInt(regNumTF.getText()));
+                try {
+                    while (result.next()) {
+                        regNumTF.setText(Integer.toString(result.getInt("registrationNumber")));
+                        lengthTF.setText(Integer.toString(result.getInt("size")));
+                        fuelTypeTF.setText(result.getString("fuelType"));
+                        keelHeightTF.setText(Integer.toString(result.getInt("keelHeight")));
+                        hasEngineTF.setText(String.valueOf(result.getBoolean("hasEngine")));
+                        sailNumberTF.setText(Integer.toString(result.getInt("sailNum")));
+                    }
+                }
+                catch(SQLException e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(null, e.getMessage(), "No Reults from Search", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+        return sailboatSearch;
+    }
 
 
     public JPanel custSearch(){
         //----------__Customer Search ---------------
         JPanel custSearch = new JPanel();
         final  String   FIRSTNAME = "First Name",
-                        LASTNAME = "Last Name",
-                        LICENSE = "Boating License Number";
+                LASTNAME = "Last Name",
+                LICENSE = "Boating License Number";
 
         JButton back = new JButton("Back"),
                 submit = new JButton("Submit");
@@ -669,8 +829,8 @@ public class HomeGUI implements ActionListener{
                 lic = new JLabel(LICENSE, SwingConstants.RIGHT);
 
         JTextField  fNameTF = new JTextField(25),
-                    lNameTF = new JTextField(25),
-                    licTF = new JTextField(25);
+                lNameTF = new JTextField(25),
+                licTF = new JTextField(25);
 
         back.addActionListener(new ActionListener(){
             @Override
@@ -679,11 +839,11 @@ public class HomeGUI implements ActionListener{
                 cl.show(cards, SEARCH_MENU);
             }
         });
-        
+
         submit.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-		        //for database connection
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                //for database connection
                 result = db.searchCustByName(fNameTF.getText(), lNameTF.getText());
                 try {
                     while (result.next()) {
@@ -696,7 +856,7 @@ public class HomeGUI implements ActionListener{
                     JOptionPane.showMessageDialog(null, e.getMessage(), "No Reults from Search", JOptionPane.ERROR_MESSAGE);
                 }
 
-			} 	
+            }
         });
 
         custSearch.setLayout(new GridLayout(5, 2));
@@ -721,14 +881,16 @@ public class HomeGUI implements ActionListener{
     public JPanel searchMenu(){
         JPanel searchMenu = new JPanel();
         final String    CUSTOMER = "Search by Customer",
-                        LEASE = "Search by Lease",
-                        BOAT = "Search by Boat",
-                        SERVICE = "Search by Service Record";
+                LEASE = "Search by Lease",
+                SAILBOAT = "Search by Sailboat",
+                POWERBOAT = "Search by Powerboat",
+                SERVICE = "Search by Service Record";
 
         JButton back = new JButton("Back"),
                 customer = new JButton(CUSTOMER),
                 lease = new JButton(LEASE),
-                boat = new JButton(BOAT),
+                sailboat = new JButton(SAILBOAT),
+                powerboat = new JButton(POWERBOAT),
                 service = new JButton(SERVICE);
 
         back.addActionListener(new ActionListener(){
@@ -755,11 +917,19 @@ public class HomeGUI implements ActionListener{
             }
         });
 
-        boat.addActionListener(new ActionListener(){
+        sailboat.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
                 CardLayout cl = (CardLayout)(cards.getLayout());
-                cl.show(cards, BOAT_SEARCH);
+                cl.show(cards, SAILBOAT_SEARCH);
+            }
+        });
+
+        powerboat.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CardLayout cl = (CardLayout)(cards.getLayout());
+                cl.show(cards, POWERBOAT_SEARCH);
             }
         });
 
@@ -775,12 +945,13 @@ public class HomeGUI implements ActionListener{
         searchMenu.add(back);
         searchMenu.add(customer);
         searchMenu.add(lease);
-        searchMenu.add(boat);
+        searchMenu.add(powerboat);
+        searchMenu.add(sailboat);
         searchMenu.add(service);
 
         return searchMenu;
     }
-    
+
     public JMenuBar createMenuBar() {
         JMenuBar menuBar;
 
@@ -798,10 +969,10 @@ public class HomeGUI implements ActionListener{
         menuBar.add(file);
 
         JMenuItem   createCustomer,
-                    createLease,
-                    createServiceRecord,
-                    createPowerboat,
-                    createSailboat;
+                createLease,
+                createServiceRecord,
+                createPowerboat,
+                createSailboat;
 
         createCustomer = new JMenuItem("Create New Customer");
         createLease = new JMenuItem("Create New Lease");
@@ -855,12 +1026,14 @@ public class HomeGUI implements ActionListener{
 
         JMenuItem customer,
                 lease,
-                boat,
+                sailboat,
+                powerboat,
                 maintenance;
 
         customer = new JMenuItem("By Customer");
         lease = new JMenuItem("By Lease");
-        boat = new JMenuItem("By Boat");
+        sailboat = new JMenuItem("By Sailboat");
+        powerboat = new JMenuItem("By Powerboat");
         maintenance = new JMenuItem("By Maintenance");
 
         customer.addActionListener(new ActionListener() {
@@ -871,13 +1044,22 @@ public class HomeGUI implements ActionListener{
             }
         });
 
-        boat.addActionListener(new ActionListener() {
+        sailboat.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 CardLayout cl = (CardLayout)(cards.getLayout());
-                cl.show(cards, BOAT_SEARCH);
+                cl.show(cards, SAILBOAT_SEARCH);
             }
         });
+
+        powerboat.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CardLayout cl = (CardLayout)(cards.getLayout());
+                cl.show(cards, POWERBOAT_SEARCH);
+            }
+        });
+
         lease.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 CardLayout cl = (CardLayout)(cards.getLayout());
@@ -894,7 +1076,8 @@ public class HomeGUI implements ActionListener{
 
         search.add(customer);
         search.add(lease);
-        search.add(boat);
+        search.add(powerboat);
+        search.add(sailboat);
         search.add(maintenance);
 
         //------- Payment ---------
@@ -928,34 +1111,34 @@ public class HomeGUI implements ActionListener{
 
         return menuBar;
     }
-    
+
     //--------financial--------
     public JPanel FinancialMenu(){
-    	JPanel financialMenu = new JPanel();
-    	
-    	JButton paymentBtn = new JButton("Make A Payment"),
-    			backBtn = new JButton("Back");
-    	
-    	backBtn.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e) {
-    			CardLayout cl = (CardLayout)(cards.getLayout());
-    			cl.show(cards, HOME_MENU);
-			}
-    	});
-    	
-    	paymentBtn.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				CardLayout cl = (CardLayout)(cards.getLayout());
-				cl.show(cards, CREATE_PAYMENT);
-			}    		
-    	});
-    	
-    	financialMenu.add(backBtn);
-    	financialMenu.add(paymentBtn);
-    	
-    	return financialMenu;
+        JPanel financialMenu = new JPanel();
+
+        JButton paymentBtn = new JButton("Make A Payment"),
+                backBtn = new JButton("Back");
+
+        backBtn.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CardLayout cl = (CardLayout)(cards.getLayout());
+                cl.show(cards, HOME_MENU);
+            }
+        });
+
+        paymentBtn.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CardLayout cl = (CardLayout)(cards.getLayout());
+                cl.show(cards, CREATE_PAYMENT);
+            }
+        });
+
+        financialMenu.add(backBtn);
+        financialMenu.add(paymentBtn);
+
+        return financialMenu;
     }
 
     @Override
