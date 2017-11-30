@@ -15,6 +15,8 @@ public class MarinaDatabase {
     PreparedStatement searchMaintenanceByInvoiceNumber = null;
     PreparedStatement addNewCust = null;
     PreparedStatement addNewLease = null;
+    PreparedStatement addNewboatLeases = null;
+    PreparedStatement addNewcustomerLeases = null;
     PreparedStatement addNewPowerboat = null;
     PreparedStatement addNewSailboat = null;
     PreparedStatement addNewMaintenance = null;
@@ -150,7 +152,7 @@ public class MarinaDatabase {
         }
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////    
-    public void addNewPowerboat(int registrationNum, double size, String fuelType, int numEngines, String engineType){
+    public void addNewPowerboat(int registrationNumber, double size, String fuelType, int numEngines, String engineType){
         try{
             addNewPowerboat = connection.prepareStatement("INSERT INTO POWERBOAT(registrationNum, size, fuelType, numEngines, engineType) VALUES(?, ?, ?, ?, ?)");
 
@@ -170,7 +172,7 @@ public class MarinaDatabase {
         }
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////    
-    public void addNewSailboat(int registrationNum, double size, String fuelType, double keelHeight, boolean hasEngine, int sailNum){
+    public void addNewSailboat(int registrationNumber, double size, String fuelType, double keelHeight, boolean hasEngine, int sailNum){
         try{
             addNewSailboat = connection.prepareStatement("INSERT INTO SAILBOAT(registrationNum, size, fuelType, keelHeight, hasEngine, sailNum) VALUES(?, ?, ?, ?, ?, ?)");
 
@@ -191,7 +193,7 @@ public class MarinaDatabase {
         }
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////    
-    public void addNewLease(int slipNumber, int slotNumber, int duration, double rate, String expirationDate){
+    public void addNewLease(int slipNumber, int slotNumber, int duration, double rate, String expirationDate, int registrationNumber, int boatingLicense){
         try{
             addNewLease = connection.prepareStatement("INSERT INTO LEASE(slipNumber, slotNumber, duration, rate, expirationDate) VALUES(?, ?, ?, ?, ?)");
 
@@ -204,6 +206,29 @@ public class MarinaDatabase {
             System.out.println("Lease Created!");
             int ans = addNewLease.executeUpdate();
             
+            
+            /*
+            addNewboatLeases = connection.prepareStatement("INSERT INTO BOATLEASES(slipNumber, registrationNumber) VALUES(?, ?)");
+
+            addNewboatLeases.setInt(1, slipNumber);
+            addNewboatLeases.setInt(2, registrationNumber);
+           
+            
+            //System.out.println("Lease Created!");
+            int ans2 = addNewLease.executeUpdate();
+            */
+           
+             /*
+            addNewcustomerLeases = connection.prepareStatement("INSERT INTO CUSTOMERLEASES(boatingLicense, slipNumber) VALUES(?, ?)");
+
+            addNewboatLeases.setInt(1, boatingLicense);
+            addNewboatLeases.setInt(2, slipNumber);
+           
+            
+            //System.out.println("Lease Created!");
+            int ans3 = addNewLease.executeUpdate();
+            */
+                
             //possible location for boatLeases and customerLeases code
             
         }
@@ -213,7 +238,7 @@ public class MarinaDatabase {
         }
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////    
-    public void addNewMaintenance(int invoiceNum, String dateOfMaintenance, String workDone){
+    public void addNewMaintenance(int invoiceNum, String dateOfMaintenance, String workDone, int registrationNumber){
         try{
             addNewMaintenance = connection.prepareStatement("INSERT INTO MAINTENANCE(invoiceNum, dateOfMaintenance, workDone) VALUES(?, ?, ?)");
 
@@ -223,6 +248,17 @@ public class MarinaDatabase {
 
             System.out.println("Maintenance record created!");
             int ans = addNewMaintenance.executeUpdate();
+            
+           /*
+            addNewboatMaintenance = connection.prepareStatement("INSERT INTO BOATMAINTENANCE(invoiceNum, registrationNumber) VALUES(?, ?, ?)");
+
+            addNewMaintenance.setInt(1, invoiceNum);
+            addNewMaintenance.setInt(2, registrationNumber);
+           
+
+            //System.out.println("Maintenance record created!");
+            int ans2 = addNewMaintenance.executeUpdate();
+           */
             
             //possible location for boatMaintenance code
         }
