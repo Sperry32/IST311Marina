@@ -170,11 +170,11 @@ public class HomeGUI implements ActionListener{
     public JPanel homeMenu(){
         JPanel homeMenu = new JPanel();
 
-        JButton
-                newBtn = new JButton("New"),
+        JButton	newBtn = new JButton("New"),
                 financial = new JButton("Financial"),
                 search = new JButton("Search");
 
+        
       
         
         newBtn.addActionListener(new ActionListener(){
@@ -199,18 +199,37 @@ public class HomeGUI implements ActionListener{
             }
         });
 
-        homeMenu.add(newBtn);
-        homeMenu.add(financial);
-        homeMenu.add(search);
-
-        homeMenu.add(new JButton("Sailboats"));
-        homeMenu.add(new JButton("PowerBoats"));
+        homeMenu.setLayout(new BorderLayout());
         
-        newBtn.setBackground(Color.red);
-        boolean arr[] = new boolean[50];
+        JPanel homeButtons = new JPanel();
+        homeButtons.add(newBtn);
+        homeButtons.add(financial);
+        homeButtons.add(search);
+        
+        homeMenu.add(homeButtons, BorderLayout.NORTH);
+
+
+        JPanel display = new JPanel();
+        display.setLayout(new BorderLayout());
+        
+        String[] sectionTypes = {	"Powerboat", 
+        							"Sailboat"};
+        
+        JComboBox boatSelection = new JComboBox(sectionTypes);
+        boatSelection.setPrototypeDisplayValue("150");
+        
+        display.add(boatSelection, BorderLayout.NORTH);
+        
+        JPanel slotButtons = new JPanel();
+        slotButtons.setLayout(new GridLayout(10, 10));
         for(int i = 0; i < 100; i++){
-        	homeMenu.add(new JButton(String.valueOf(i+1))); 
+        	slotButtons.add(new JButton(String.valueOf(i+1))); 
         }
+        display.add(slotButtons, BorderLayout.CENTER);
+        
+        display.setBorder(BorderFactory.createEmptyBorder(100, 100, 100, 100));
+        homeMenu.add(display, BorderLayout.CENTER);
+       
         return homeMenu;
     }
 
