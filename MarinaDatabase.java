@@ -21,6 +21,13 @@ public class MarinaDatabase {
     PreparedStatement addNewSailboat = null;
     PreparedStatement addNewMaintenance = null;
     PreparedStatement addNewboatMaintenance = null;
+    PreparedStatement updatePowerSlot = null;
+    PreparedStatement updateSailSlot = null;
+    PreparedStatement SailboatSlots = null;
+    PreparedStatement PowerboatSlots = null;
+    PreparedStatement SailSlotInfo = null;
+    PreparedStatement PowerSlotInfo = null;
+    
     DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 
     public MarinaDatabase(){
@@ -253,6 +260,126 @@ public class MarinaDatabase {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public void updatePowerSlot (int slipNumber, int slotNumber){
+    	try{
+    		updatePowerSlot = connection.prepareStatement("UPDATE POWERBOATSLOTS SET slipNumber = ? WHERE slotNumber = ?");
+    		
+    		updatePowerSlot.setInt(1, slipNumber);
+    		updatePowerSlot.setInt(2, slotNumber);
+    		
+    		int ans = updatePowerSlot.executeUpdate();
+    		
+    	}
+    	 catch(Exception e){
+             e.printStackTrace();
+             JOptionPane.showMessageDialog(null, e.getMessage());
+    	 }
+    }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public void updateSailSlot (int slipNumber, int slotNumber){
+    	try{
+    		updateSailSlot = connection.prepareStatement("UPDATE SAILBOATSLOTS SET slipNumber = ? WHERE slotNumber = ?");
+
+    		updateSailSlot.setInt(1, slipNumber);
+    		updateSailSlot.setInt(2, slotNumber);
+
+    		int ans =  updateSailSlot.executeUpdate();
+
+    	}
+    	catch(Exception e){
+    		e.printStackTrace();
+    		JOptionPane.showMessageDialog(null, e.getMessage());
+    	}
+    }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public ResultSet PowerboatSlots (int slotNumber) 
+    {
+    	
+        try
+        {
+        	PowerboatSlots = connection.prepareStatement(
+                    "SELECT slipNumber FROM PowerboatSlots WHERE slotNumber = ?");
+
+        	PowerboatSlots.setInt(1, slotNumber);
+
+            rSet = PowerboatSlots.executeQuery();
+
+            return rSet;
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e.getMessage());
+            return rSet;
+        }
+    }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public ResultSet SailboatSlots (int slotNumber) 
+    {
+
+    	try
+    	{
+    		SailboatSlots = connection.prepareStatement(
+    				"SELECT slipNumber FROM SailboatSlots WHERE slotNumber = ?");
+
+    		SailboatSlots.setInt(1, slotNumber);
+
+    		rSet = SailboatSlots.executeQuery();
+
+    		return rSet;
+    	}
+    	catch(Exception e)
+    	{
+    		e.printStackTrace();
+    		JOptionPane.showMessageDialog(null, e.getMessage());
+    		return rSet;
+    	}
+    }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+public ResultSet PowerSlotInfo (int slotNumber) 
+	{
+
+	try
+	{
+		PowerSlotInfo = connection.prepareStatement(
+			"SELECT slipNumber, firstName, lastName, boatingLicense, leaseNumber, registrationNumber FROM Customer, customerLeases, Lease, boatLeases, Powerboat, PowerboatSlots WHERE slotNumber = ?");
+
+		PowerSlotInfo.setInt(1, slotNumber);
+
+	rSet = PowerSlotInfo.executeQuery();
+
+	return rSet;
+	}
+	catch(Exception e)
+	{
+		e.printStackTrace();
+		JOptionPane.showMessageDialog(null, e.getMessage());
+		return rSet;
+	}
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+public ResultSet SailSlotInfo (int slotNumber) 
+{
+
+try
+{
+	SailSlotInfo = connection.prepareStatement(
+		"SELECT slipNumber, firstName, lastName, boatingLicense, leaseNumber, registrationNumber FROM Customer, customerLeases, Lease, boatLeases, Sailboat, SailboatSlots WHERE slotNumber = ?");
+
+	SailSlotInfo.setInt(1, slotNumber);
+
+	rSet = SailSlotInfo.executeQuery();
+
+	return rSet;
+	}
+		catch(Exception e)
+	{
+	e.printStackTrace();
+	JOptionPane.showMessageDialog(null, e.getMessage());
+	return rSet;
+}
+}
 }
 ///////////////Storage/////////////////////////
 // addNewServiceRecord.setDate(2, (Date)df.parse(dateOfMaintenance));
