@@ -322,10 +322,6 @@ public class HomeGUI implements ActionListener{
         	}
         	
         	
-        	powerboatArray[i] = powerButton;
-        	sailboatArray[i] = sailButton;
-        	slotButtons.add(powerButton);
-        	slotButtons.add(sailButton);
         	
         	powerButton.addActionListener(new ActionListener(){
                 @Override
@@ -337,7 +333,7 @@ public class HomeGUI implements ActionListener{
 
                     	slipNumTF.setEditable(false);
                     	
-                    	result = db.SailSlotInfo(selectedNum);
+                    	result = db.PowerSlotInfo(selectedNum);
                     	
                     	try{
                     		while(result.next()){
@@ -389,7 +385,7 @@ public class HomeGUI implements ActionListener{
                     	}
                     }
                     else{
-                    	selectedNum = Integer.parseInt(powerButton.getText());
+                    	selectedNum = Integer.parseInt(sailButton.getText());
                     	releaseBtn.setEnabled(false);
                     	slipNumTF.setEditable(true);
                     	addBtn.setEnabled(true);
@@ -401,6 +397,11 @@ public class HomeGUI implements ActionListener{
                     }
                 }
             });
+
+        	powerboatArray[i] = powerButton;
+        	sailboatArray[i] = sailButton;
+        	slotButtons.add(powerButton);
+        	slotButtons.add(sailButton);
         }
         display.add(slotButtons, BorderLayout.CENTER);
        
