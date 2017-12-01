@@ -20,6 +20,7 @@ public class MarinaDatabase {
     PreparedStatement addNewPowerboat = null;
     PreparedStatement addNewSailboat = null;
     PreparedStatement addNewMaintenance = null;
+    PreparedStatement addNewboatMaintenance = null;
     DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 
     public MarinaDatabase(){
@@ -236,14 +237,14 @@ public class MarinaDatabase {
             System.out.println("Maintenance record created!");
             int ans = addNewMaintenance.executeUpdate();
 
-           /*
-            addNewboatMaintenance = connection.prepareStatement("INSERT INTO BOATMAINTENANCE(invoiceNum, registrationNumber) VALUES(?, ?, ?)");
-            addNewMaintenance.setInt(1, invoiceNum);
-            addNewMaintenance.setInt(2, registrationNumber);
+           
+            addNewboatMaintenance = connection.prepareStatement("INSERT INTO BOATMAINTENANCE(invoiceNum, registrationNum) VALUES(?, ?)");
+            addNewboatMaintenance.setInt(1, invoiceNum);
+            addNewboatMaintenance.setInt(2, registrationNumber);
 
-            //System.out.println("Maintenance record created!");
-            int ans2 = addNewMaintenance.executeUpdate();
-           */
+            System.out.println("Maintenance record created!");
+            int ans2 = addNewboatMaintenance.executeUpdate();
+           
 
             //possible location for boatMaintenance code
         }
