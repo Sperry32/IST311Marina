@@ -4,7 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 public class MarinaDatabase {
-    static final String DATABASE_URL = "jdbc:ucanaccess://U:/p/o/pop5137/Desktop/Marina.accdb";
+    static final String DATABASE_URL = "jdbc:ucanaccess://X:/My Documents/Marina.accdb";
     Connection connection = null;
     Statement statement = null;
     ResultSet rSet = null;
@@ -342,7 +342,7 @@ public ResultSet PowerSlotInfo (int slotNumber)
 	try
 	{
 		PowerSlotInfo = connection.prepareStatement(
-			"SELECT slipNumber, firstName, lastName, boatingLicense, leaseNumber, registrationNumber FROM Customer, customerLeases, Lease, boatLeases, Powerboat, PowerboatSlots WHERE slotNumber = ?");
+			"SELECT slipNumber, firstName, lastName, boatingLicense, registrationNumber FROM Customer, customerLeases, Lease, boatLeases, Powerboat, PowerboatSlots WHERE PowerboatSlots.slotNumber = ?");
 
 		PowerSlotInfo.setInt(1, slotNumber);
 
@@ -364,7 +364,7 @@ public ResultSet SailSlotInfo (int slotNumber)
 try
 {
 	SailSlotInfo = connection.prepareStatement(
-		"SELECT slipNumber, firstName, lastName, boatingLicense, leaseNumber, registrationNumber FROM Customer, customerLeases, Lease, boatLeases, Sailboat, SailboatSlots WHERE slotNumber = ?");
+		"SELECT slipNumber, firstName, lastName, boatingLicense, registrationNumber FROM Customer, customerLeases, Lease, boatLeases, Sailboat, SailboatSlots WHERE SailboatSlots.slotNumber = ?");
 
 	SailSlotInfo.setInt(1, slotNumber);
 

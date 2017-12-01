@@ -20,7 +20,6 @@ public class HomeGUI implements ActionListener{
 	
 	JTextField 	nameTF,
 				boatingLicenseTF,
-				leaseTF,
 				boatNumberTF,
 				slipNumTF;
     
@@ -265,17 +264,15 @@ public class HomeGUI implements ActionListener{
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (boatSelection.getSelectedItem().equals("Powerboat")){
-                	System.out.println("YO IM A POWERBOAT");
                 	for(int i = 1; i < 101; i++){
                 		sailboatArray[i].setVisible(false);
                 		powerboatArray[i].setVisible(true);
                 	}
                 	
                 	
-                	//execute query
+                	//TODO execute query
                 }
                 else{
-                	System.out.println("SAIL");
                 	for(int i = 1; i < 101; i++){
 	            		sailboatArray[i].setVisible(true);
 	            		powerboatArray[i].setVisible(false);
@@ -283,8 +280,6 @@ public class HomeGUI implements ActionListener{
                 }
             }
         });
-        //bottomPanel.add(new JLabel());
-        
         
         
         homeMenu.add(bottomPanel, BorderLayout.SOUTH);
@@ -339,18 +334,33 @@ public class HomeGUI implements ActionListener{
                     	selectedNum = Integer.parseInt(powerButton.getText());
                     	releaseBtn.setEnabled(true);
                     	addBtn.setEnabled(false);
+
                     	slipNumTF.setEditable(false);
-                    	//execute query
                     	
-                    	nameTF.setText("Hello world");
+                    	result = db.SailSlotInfo(selectedNum);
                     	
-                    	//execute query
+                    	try{
+                    		while(result.next()){
+                    			nameTF.setText(result.getString("firstName") + " " + result.getString("lastName"));
+                				boatingLicenseTF.setText(String.valueOf(result.getInt("boatingLicense")));
+                				boatNumberTF.setText(String.valueOf(result.getInt("registrationNumber")));
+                				slipNumTF.setText(String.valueOf(result.getInt("slipNumber")));;
+                    		}
+                    	}
+                    	catch(Exception exc){
+                    		exc.printStackTrace();
+                    	}
                     }
                     else{
+                    	selectedNum = Integer.parseInt(powerButton.getText());
                     	releaseBtn.setEnabled(false);
-                    	nameTF.setText("Ye, I'm not red");
                     	slipNumTF.setEditable(true);
                     	addBtn.setEnabled(true);
+                    	
+                    	nameTF.setText("");
+        				boatingLicenseTF.setText("");
+        				boatNumberTF.setText("");
+        				slipNumTF.setText("");
                     }
                 }
             });
@@ -364,15 +374,14 @@ public class HomeGUI implements ActionListener{
                     	addBtn.setEnabled(false);
                     	slipNumTF.setEditable(false);
                     	
-                    	ResultSet rs = db.SailSlotInfo(selectedNum);
+                    	result = db.SailSlotInfo(selectedNum);
                     	
                     	try{
-                    		while(rs.next()){
-                    			nameTF.setText(rs.getString("firstName") + " " + rs.getString("lastName"));
-                				boatingLicenseTF.setText(String.valueOf(rs.getInt("boatingLicense")));
-                				leaseTF.setText(String.valueOf(rs.getInt("leaseNumber")));
-                				boatNumberTF.setText(String.valueOf(rs.getInt("registrationNumber")));
-                				slipNumTF.setText(String.valueOf(rs.getInt("slipNumber")));;
+                    		while(result.next()){
+                    			nameTF.setText(result.getString("firstName") + " " + result.getString("lastName"));
+                				boatingLicenseTF.setText(String.valueOf(result.getInt("boatingLicense")));
+                				boatNumberTF.setText(String.valueOf(result.getInt("registrationNumber")));
+                				slipNumTF.setText(String.valueOf(result.getInt("slipNumber")));;
                     		}
                     	}
                     	catch(Exception exc){
@@ -380,10 +389,15 @@ public class HomeGUI implements ActionListener{
                     	}
                     }
                     else{
+                    	selectedNum = Integer.parseInt(powerButton.getText());
                     	releaseBtn.setEnabled(false);
-                    	nameTF.setText("Ye, I'm not red");
                     	slipNumTF.setEditable(true);
                     	addBtn.setEnabled(true);
+                    	
+                    	nameTF.setText("");
+        				boatingLicenseTF.setText("");
+        				boatNumberTF.setText("");
+        				slipNumTF.setText("");
                     }
                 }
             });
@@ -472,13 +486,11 @@ public class HomeGUI implements ActionListener{
     	
     	JLabel 	name = new JLabel("Name"),
     			boatingLicense = new JLabel("BoatingLicense"),
-    			leaseNumber = new JLabel("Lease Number"),
     			boatNumber = new JLabel("Boat Number"),
     			slipNum = new JLabel("Slip Number");
     	
     	nameTF = new JTextField();
     	boatingLicenseTF = new JTextField();
-    	leaseTF = new JTextField();
     	boatNumberTF = new JTextField();
     	slipNumTF = new JTextField();
     	
@@ -487,21 +499,18 @@ public class HomeGUI implements ActionListener{
     	
     	nameTF.setEditable(false);
     	boatingLicenseTF.setEditable(false);
-    	leaseTF.setEditable(false);
     	boatNumberTF.setEditable(false);
     	slipNumTF.setEditable(false);
     		
     	slipInformation.setLayout(new GridLayout(1,2));
     	
-    	panel1.setLayout(new GridLayout(8,2));
+    	panel1.setLayout(new GridLayout(7,2));
     	panel1.setBorder(BorderFactory.createEmptyBorder(0, 15, 0, 0));
     	
     	panel1.add(name);
     	panel1.add(nameTF);
     	panel1.add(boatingLicense);
     	panel1.add(boatingLicenseTF);
-    	panel1.add(leaseNumber);
-    	panel1.add(leaseTF);
     	panel1.add(boatNumber);
     	panel1.add(boatNumberTF);
     	
@@ -530,13 +539,82 @@ public class HomeGUI implements ActionListener{
             public void actionPerformed(ActionEvent e) {
             	if(boatSelection.getSelectedItem().equals("Sailboat")){
             		sailboatArray[selectedNum].setBackground(null);
+            		
+            		int slipNumber = 0;
+            		int slotNumber = selectedNum;
+            		
+            		db.updateSailSlot(slipNumber, slotNumber);
+            		
+            		nameTF.setText("");
+    				boatingLicenseTF.setText("");
+    				boatNumberTF.setText("");
+    				slipNumTF.setText("");
             	}
             	else{
             		powerboatArray[selectedNum].setBackground(null);
+
+            		int slipNumber = 0;
+            		int slotNumber = selectedNum;
+            		
+            		db.updatePowerSlot(slipNumber, slotNumber);
+            		
+            		nameTF.setText("");
+    				boatingLicenseTF.setText("");
+    				boatNumberTF.setText("");
+    				slipNumTF.setText("");
             	}
             }
         });
     	
+        addBtn.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	if(boatSelection.getSelectedItem().equals("Sailboat")){
+            		sailboatArray[selectedNum].setBackground(Color.red);
+            		
+            		int slipNumber = Integer.parseInt(slipNumTF.getText());
+            		int slotNumber = selectedNum;
+            		
+            		db.updateSailSlot(slipNumber, slotNumber);
+            		
+            		ResultSet rs = db.SailSlotInfo(selectedNum);
+                	
+                	try{
+                		while(rs.next()){
+                			nameTF.setText(rs.getString("firstName") + " " + rs.getString("lastName"));
+            				boatingLicenseTF.setText(String.valueOf(rs.getInt("boatingLicense")));
+            				boatNumberTF.setText(String.valueOf(rs.getInt("registrationNumber")));
+            				slipNumTF.setText(String.valueOf(rs.getInt("slipNumber")));;
+                		}
+                	}
+                	catch(Exception exc){
+                		exc.printStackTrace();
+                	}
+            	}
+            	else{
+            		powerboatArray[selectedNum].setBackground(Color.red);
+            		
+            		int slipNumber = Integer.parseInt(slipNumTF.getText());
+            		int slotNumber = selectedNum;
+            		
+            		db.updatePowerSlot(slipNumber, slotNumber);
+            		
+            		ResultSet rs = db.SailSlotInfo(selectedNum);
+                	
+                	try{
+                		while(rs.next()){
+                			nameTF.setText(rs.getString("firstName") + " " + rs.getString("lastName"));
+            				boatingLicenseTF.setText(String.valueOf(rs.getInt("boatingLicense")));
+            				boatNumberTF.setText(String.valueOf(rs.getInt("registrationNumber")));
+            				slipNumTF.setText(String.valueOf(rs.getInt("slipNumber")));;
+                		}
+                	}
+                	catch(Exception exc){
+                		exc.printStackTrace();
+                	}
+            	}
+            }
+        });
     	
     	return slipInformation; 
     	
@@ -558,7 +636,6 @@ public class HomeGUI implements ActionListener{
     	
     	JTextField 	nameTF = new JTextField(),
     				boatingLicenseTF = new JTextField(),
-    				leaseTF = new JTextField(),
     				boatNumberTF = new JTextField(),
     				slipNumTF = new JTextField();
     	
@@ -569,7 +646,6 @@ public class HomeGUI implements ActionListener{
     	panel1.add(boatingLicense);
     	panel1.add(boatingLicenseTF);
     	panel1.add(leaseNumber);
-    	panel1.add(leaseTF);
     	panel1.add(boatNumber);
     	panel1.add(boatNumberTF);
     	
@@ -641,7 +717,6 @@ public class HomeGUI implements ActionListener{
         JPanel createLease = new JPanel();
 
         final String    CUSTREGNUM      = "Customer License Number",
-                        BOATSLOT        = "Boat slot",
                         RATE            = "Rate",
                         EXPIRATIONDATE  = "Expiration Date (yyyy-mm-dd)",
                         DURATION        = "Duration",
