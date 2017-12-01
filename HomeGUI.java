@@ -8,6 +8,22 @@ import java.text.SimpleDateFormat;
 public class HomeGUI implements ActionListener{
     JPanel cards;
     
+    int selectedNum = 1;
+    JButton[] sailboatArray= new JButton[101];
+    JButton[] powerboatArray= new JButton[101];
+    
+    JComboBox boatSelection;
+    
+    JButton 	releaseBtn,
+				addBtn;
+
+	
+	JTextField 	nameTF,
+				boatingLicenseTF,
+				leaseTF,
+				boatNumberTF,
+				slipNumTF;
+    
     SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
     final String    HOME_MENU = "Home Menu",
             SEARCH_MENU = "Search Menu",
@@ -23,7 +39,9 @@ public class HomeGUI implements ActionListener{
             CREATE_SERVICE_RECORD = "Create Service Record",
             CREATE_PAYMENT = "Create Payment",
             CREATE_SAILBOAT = "Create Sailboat",
-            CREATE_POWERBOAT = "Create Powerboat";
+            CREATE_POWERBOAT = "Create Powerboat",
+            SLIP_INFORMATION = "Slip Information",
+            ADD_INFORMATION = "Add Information";
 
 
     MarinaDatabase db = new MarinaDatabase();
@@ -45,13 +63,14 @@ public class HomeGUI implements ActionListener{
         frame.setJMenuBar(gui.createMenuBar());
         gui.addComponentToPane(frame.getContentPane());
 
-        frame.setSize(400, 400);
+        frame.setSize(1200, 700);
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
     }
 
     public void addComponentToPane(Container pane){
-        JPanel  homeMenu = homeMenu(),
+        JPanel  slipInformation = createSlipInformation(),
+        		homeMenu = homeMenu(),
                 searchMenu = searchMenu(),
                 financialMenu = FinancialMenu(),
                 createCustomer = createCustomer(),
@@ -65,7 +84,8 @@ public class HomeGUI implements ActionListener{
                 serviceSearch = serviceSearch(),
                 createPayment = createPayment(),
                 createPowerboat = createPowerboat(),
-                createSailboat = createSailboat();
+                createSailboat = createSailboat(),
+        		addInformation = createAddInformation();
 
         cards = new JPanel(new CardLayout());
 
@@ -85,6 +105,8 @@ public class HomeGUI implements ActionListener{
         cards.add(createPayment, CREATE_PAYMENT);
         cards.add(createSailboat, CREATE_SAILBOAT);
         cards.add(createPowerboat, CREATE_POWERBOAT);
+        cards.add(slipInformation, SLIP_INFORMATION);
+        cards.add(addInformation, ADD_INFORMATION);
 
         pane.add(cards);
 
@@ -212,23 +234,162 @@ public class HomeGUI implements ActionListener{
         JPanel display = new JPanel();
         display.setLayout(new BorderLayout());
         
+        //This block containsn the code for the drop down menu + listener for the marina boat type
         String[] sectionTypes = {	"Powerboat", 
         							"Sailboat"};
+        JPanel selectionPanel = new JPanel();
+        selectionPanel.setLayout(new GridLayout());
+        boatSelection = new JComboBox(sectionTypes);
         
-        JComboBox boatSelection = new JComboBox(sectionTypes);
-        boatSelection.setPrototypeDisplayValue("150");
+        boatSelection.setSelectedItem("Powerboat");
         
-        display.add(boatSelection, BorderLayout.NORTH);
+        
+        selectionPanel.add(new JLabel());
+        selectionPanel.add(boatSelection);
+        selectionPanel.add(new JLabel());
+        
+        display.add(selectionPanel, BorderLayout.NORTH);
         
         JPanel slotButtons = new JPanel();
         slotButtons.setLayout(new GridLayout(10, 10));
-        for(int i = 0; i < 100; i++){
-        	slotButtons.add(new JButton(String.valueOf(i+1))); 
+        
+        
+        display.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        homeMenu.add(display, BorderLayout.CENTER);
+        
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setLayout(new GridLayout(1,2));
+        bottomPanel.add(createSlipInformation());
+        
+        boatSelection.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (boatSelection.getSelectedItem().equals("Powerboat")){
+                	System.out.println("YO IM A POWERBOAT");
+                	for(int i = 1; i < 101; i++){
+                		sailboatArray[i].setVisible(false);
+                		powerboatArray[i].setVisible(true);
+                	}
+                	
+                	
+                	//execute query
+                }
+                else{
+                	System.out.println("SAIL");
+                	for(int i = 1; i < 101; i++){
+	            		sailboatArray[i].setVisible(true);
+	            		powerboatArray[i].setVisible(false);
+                	}
+                }
+            }
+        });
+        //bottomPanel.add(new JLabel());
+        
+        
+        
+        homeMenu.add(bottomPanel, BorderLayout.SOUTH);
+       
+        
+        for(int i = 1; i < 101; i++){
+        	JButton sailButton = new JButton(String.valueOf(i));
+        	
+        	//QUERY FOR SAILSLOTS
+        	try{
+        		ResultSet rs = db.SailboatSlots(i);
+        		
+        		while(rs.next()){
+            		if(rs.getInt("slipNumber") != 0){
+            			sailButton.setBackground(Color.red);
+            		}
+        		}
+        	}
+        	catch (Exception e){
+        		e.printStackTrace();
+        	}
+        	
+        	sailButton.setVisible(false);
+        	
+        	JButton powerButton = new JButton(String.valueOf(i));
+        	
+        	//QUERY FOR POWERSLOTS
+        	try{
+        		ResultSet rs = db.PowerboatSlots(i);
+        		
+        		while(rs.next()){
+            		if(rs.getInt("slipNumber") != 0){
+            			powerButton.setBackground(Color.red);
+            		}
+        		}   		
+
+        	}
+        	catch (Exception e){
+        		e.printStackTrace();
+        	}
+        	
+        	
+        	powerboatArray[i] = powerButton;
+        	sailboatArray[i] = sailButton;
+        	slotButtons.add(powerButton);
+        	slotButtons.add(sailButton);
+        	
+        	powerButton.addActionListener(new ActionListener(){
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (powerButton.getBackground() == Color.red){
+                    	selectedNum = Integer.parseInt(powerButton.getText());
+                    	releaseBtn.setEnabled(true);
+                    	addBtn.setEnabled(false);
+                    	slipNumTF.setEditable(false);
+                    	//execute query
+                    	
+                    	nameTF.setText("Hello world");
+                    	
+                    	//execute query
+                    }
+                    else{
+                    	releaseBtn.setEnabled(false);
+                    	nameTF.setText("Ye, I'm not red");
+                    	slipNumTF.setEditable(true);
+                    	addBtn.setEnabled(true);
+                    }
+                }
+            });
+        	
+        	sailButton.addActionListener(new ActionListener(){
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (sailButton.getBackground() == Color.red){
+                    	selectedNum = Integer.parseInt(sailButton.getText());
+                    	releaseBtn.setEnabled(true);
+                    	addBtn.setEnabled(false);
+                    	slipNumTF.setEditable(false);
+                    	
+                    	ResultSet rs = db.SailSlotInfo(selectedNum);
+                    	
+                    	try{
+                    		while(rs.next()){
+                    			nameTF.setText(rs.getString("firstName") + " " + rs.getString("lastName"));
+                				boatingLicenseTF.setText(String.valueOf(rs.getInt("boatingLicense")));
+                				leaseTF.setText(String.valueOf(rs.getInt("leaseNumber")));
+                				boatNumberTF.setText(String.valueOf(rs.getInt("registrationNumber")));
+                				slipNumTF.setText(String.valueOf(rs.getInt("slipNumber")));;
+                    		}
+                    	}
+                    	catch(Exception exc){
+                    		exc.printStackTrace();
+                    	}
+                    }
+                    else{
+                    	releaseBtn.setEnabled(false);
+                    	nameTF.setText("Ye, I'm not red");
+                    	slipNumTF.setEditable(true);
+                    	addBtn.setEnabled(true);
+                    }
+                }
+            });
         }
         display.add(slotButtons, BorderLayout.CENTER);
-        
-        display.setBorder(BorderFactory.createEmptyBorder(100, 100, 100, 100));
-        homeMenu.add(display, BorderLayout.CENTER);
+       
        
         return homeMenu;
     }
@@ -301,6 +462,123 @@ public class HomeGUI implements ActionListener{
         createMenu.add(sailBoat);
 
         return createMenu;
+    }
+    
+    public JPanel createSlipInformation(){
+    	JPanel slipInformation = new JPanel();
+    	
+    	JPanel panel1 = new JPanel();
+    	JPanel panel2 = new JPanel();
+    	
+    	JLabel 	name = new JLabel("Name"),
+    			boatingLicense = new JLabel("BoatingLicense"),
+    			leaseNumber = new JLabel("Lease Number"),
+    			boatNumber = new JLabel("Boat Number"),
+    			slipNum = new JLabel("Slip Number");
+    	
+    	nameTF = new JTextField();
+    	boatingLicenseTF = new JTextField();
+    	leaseTF = new JTextField();
+    	boatNumberTF = new JTextField();
+    	slipNumTF = new JTextField();
+    	
+    	releaseBtn = new JButton("Release From Dock");
+    	addBtn = new JButton("Add to Dock");
+    	
+    	nameTF.setEditable(false);
+    	boatingLicenseTF.setEditable(false);
+    	leaseTF.setEditable(false);
+    	boatNumberTF.setEditable(false);
+    	slipNumTF.setEditable(false);
+    		
+    	slipInformation.setLayout(new GridLayout(1,2));
+    	
+    	panel1.setLayout(new GridLayout(8,2));
+    	panel1.setBorder(BorderFactory.createEmptyBorder(0, 15, 0, 0));
+    	
+    	panel1.add(name);
+    	panel1.add(nameTF);
+    	panel1.add(boatingLicense);
+    	panel1.add(boatingLicenseTF);
+    	panel1.add(leaseNumber);
+    	panel1.add(leaseTF);
+    	panel1.add(boatNumber);
+    	panel1.add(boatNumberTF);
+    	
+    	panel2.setLayout(new GridLayout(4,2));
+    	
+    	panel2.setBorder(BorderFactory.createEmptyBorder(0, 15, 0, 0));
+    	
+    	panel2.add(new JLabel());
+    	panel2.add(new JLabel());
+    	panel2.add(slipNum);
+    	panel2.add(slipNumTF);
+    	panel2.add(releaseBtn);
+    	panel2.add(addBtn);
+    	panel2.add(new JLabel());
+    	panel2.add(new JLabel());
+    	
+    	//panel2.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 20));
+    	
+    	slipInformation.setBorder(BorderFactory.createEmptyBorder(0, 20, 20, 20));
+    	
+    	slipInformation.add(panel1);
+    	slipInformation.add(panel2);
+    	
+        releaseBtn.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	if(boatSelection.getSelectedItem().equals("Sailboat")){
+            		sailboatArray[selectedNum].setBackground(null);
+            	}
+            	else{
+            		powerboatArray[selectedNum].setBackground(null);
+            	}
+            }
+        });
+    	
+    	
+    	return slipInformation; 
+    	
+    }
+    
+    public JPanel createAddInformation(){
+    	JPanel addInformation = new JPanel();
+    	
+    	JPanel panel1 = new JPanel();
+    	JPanel panel2 = new JPanel();
+    	
+    	JButton submitBtn = new JButton("Submit");
+    	
+    	JLabel 	name = new JLabel("Name"),
+    			boatingLicense = new JLabel("BoatingLicense"),
+    			leaseNumber = new JLabel("Lease Number"),
+    			boatNumber = new JLabel("Boat Number"),
+    			slipNum = new JLabel("Slip # to take");
+    	
+    	JTextField 	nameTF = new JTextField(),
+    				boatingLicenseTF = new JTextField(),
+    				leaseTF = new JTextField(),
+    				boatNumberTF = new JTextField(),
+    				slipNumTF = new JTextField();
+    	
+    	panel1.setLayout(new GridLayout(8,2));
+    	
+    	panel1.add(name);
+    	panel1.add(nameTF);
+    	panel1.add(boatingLicense);
+    	panel1.add(boatingLicenseTF);
+    	panel1.add(leaseNumber);
+    	panel1.add(leaseTF);
+    	panel1.add(boatNumber);
+    	panel1.add(boatNumberTF);
+    	
+    	panel2.setLayout(new GridLayout(3,1));
+    	panel2.add(slipNum);
+    	panel2.add(slipNumTF);
+    	panel2.add(submitBtn);
+    	
+    	return addInformation;
     }
 
     public JPanel createCustomer(){
@@ -375,14 +653,12 @@ public class HomeGUI implements ActionListener{
 
         JLabel  boatingLicense = new JLabel(CUSTREGNUM, SwingConstants.RIGHT),
                 slipNum = new JLabel(SLIPNUMBER, SwingConstants.RIGHT),
-                boatSlot = new JLabel(BOATSLOT, SwingConstants.RIGHT),
                 expirationDate = new JLabel(EXPIRATIONDATE, SwingConstants.RIGHT),
                 duration = new JLabel(DURATION, SwingConstants.RIGHT),
                 rate = new JLabel(RATE, SwingConstants.RIGHT);
 
         JTextField  boatingLicenseTF = new JTextField(25),
                     slipNumTF = new JTextField(25),
-                    boatSlotTF = new JTextField(25),
                     expirationDateTF = new JTextField(25),
                     durationTF = new JTextField(25),
                     rateTF = new JTextField(25);
@@ -400,16 +676,15 @@ public class HomeGUI implements ActionListener{
             public void actionPerformed(ActionEvent e) {
                 int boatingLicense = Integer.parseInt(boatingLicenseTF.getText());
                 int slipNum = Integer.parseInt(slipNumTF.getText());
-                int boatSlot = Integer.parseInt(boatSlotTF.getText());
                 java.sql.Date expirationDate = java.sql.Date.valueOf(expirationDateTF.getText());
                 int duration = Integer.parseInt(durationTF.getText());
                 double rate = Double.parseDouble(rateTF.getText());
 
-                db.addNewLease(slipNum, boatSlot, duration, rate, expirationDate, boatingLicense);
+                db.addNewLease(slipNum,  duration, rate, expirationDate, boatingLicense);
             }
         });
 
-        createLease.setLayout(new GridLayout(8, 2));
+        createLease.setLayout(new GridLayout(7, 2));
 
         createLease.add(back);
         createLease.add(new JLabel());
@@ -420,8 +695,7 @@ public class HomeGUI implements ActionListener{
         createLease.add(slipNum);
         createLease.add(slipNumTF);
 
-        createLease.add(boatSlot);
-        createLease.add(boatSlotTF);
+
 
         createLease.add(expirationDate);
         createLease.add(expirationDateTF);
@@ -627,6 +901,8 @@ public class HomeGUI implements ActionListener{
 
         JButton back = new JButton("Back"),
                 submit = new JButton("Submit");
+        
+        JCheckBox hasEngineCB = new JCheckBox("Has Engine");
 
         JLabel	leaseSlipNumber = new JLabel("Lease Slip Number:", SwingConstants.RIGHT),
                 registrationNum = new JLabel("Registration Number:", SwingConstants.RIGHT),
@@ -641,7 +917,6 @@ public class HomeGUI implements ActionListener{
                     lengthTF = new JTextField(12),
                     fuelTypeTF = new JTextField(12),
                     keelHeightTF = new JTextField(12),
-                    hasEngineTF = new JTextField(12),
                     sailNumTF = new JTextField(12);
 
 
@@ -666,7 +941,7 @@ public class HomeGUI implements ActionListener{
         createSailboat.add(keelHeightTF);
 
         createSailboat.add(hasEngine);
-        createSailboat.add(hasEngineTF);
+        createSailboat.add(hasEngineCB);
 
         createSailboat.add(sailNum);
         createSailboat.add(sailNumTF);
@@ -688,7 +963,7 @@ public class HomeGUI implements ActionListener{
             	Double size = Double.parseDouble(lengthTF.getText());
             	String fuelType = fuelTypeTF.getText();
             	double keelHeight = Double.parseDouble(keelHeightTF.getText());
-            	boolean hasEngine = Boolean.parseBoolean(hasEngineTF.getText());
+            	boolean hasEngine = hasEngineCB.isSelected();
             	int sailNum = Integer.parseInt(sailNumTF.getText());
             	
             	db.addNewSailboat(registrationNumber, size, fuelType, keelHeight, hasEngine, sailNum);

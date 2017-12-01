@@ -4,7 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 public class MarinaDatabase {
-    static final String DATABASE_URL = "jdbc:ucanaccess://X:/My Documents/Marina.accdb";
+    static final String DATABASE_URL = "jdbc:ucanaccess://U:/p/o/pop5137/Desktop/Marina.accdb";
     Connection connection = null;
     Statement statement = null;
     ResultSet rSet = null;
@@ -200,15 +200,14 @@ public class MarinaDatabase {
         }
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
-    public void addNewLease(int slipNumber, int slotNumber, int duration, double rate, java.sql.Date expirationDate, int boatingLicense){
+    public void addNewLease(int slipNumber, int duration, double rate, java.sql.Date expirationDate, int boatingLicense){
         try{
-            addNewLease = connection.prepareStatement("INSERT INTO LEASE(slipNumber, slotNumber, duration, rate, expirationDate) VALUES(?, ?, ?, ?, ?)");
+            addNewLease = connection.prepareStatement("INSERT INTO LEASE(slipNumber, duration, rate, expirationDate) VALUES(?, ?, ?, ?)");
 
             addNewLease.setInt(1, slipNumber);
-            addNewLease.setInt(2, slotNumber);
-            addNewLease.setInt(3, duration);
-            addNewLease.setDouble(4, rate);
-            addNewLease.setDate(5, expirationDate);
+            addNewLease.setInt(2, duration);
+            addNewLease.setDouble(3, rate);
+            addNewLease.setDate(4, expirationDate);
 
             System.out.println("Lease Created!");
             int ans = addNewLease.executeUpdate();
